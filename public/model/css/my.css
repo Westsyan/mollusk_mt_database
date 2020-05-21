@@ -1,0 +1,47 @@
+* {
+    -webkit-box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    box-sizing:unset;
+}
+
+.form-control{
+    height: unset;
+}
+
+.monospace{
+    width: 500px;
+}
+
+.button{
+    border-radius: 3px;
+    width: 180px;
+    height: 30px;
+    line-height: 30px;
+}
+
+.input-group .form-control{
+    z-index: 0!important;
+    height: 20px;
+}
+
+/*文本输入框字体*/
+.monospace {
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+a:focus{
+    outline:none;
+}
+
+.checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] {
+    position: unset;
+    margin-right: 5px;
+}
+
+.table{
+    width: 899px;
+}
+
+ul li {
+    background: none;
+}

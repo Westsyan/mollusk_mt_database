@@ -1,0 +1,98 @@
+
+.bar_a{
+    fill:#000000;/*#FFC100*/
+    stroke:#6B6B6B;/*#E7AE00*/
+    clip-path: url(#clip);
+}
+
+.bar_b{
+    fill:#000000;
+    stroke:#6B6B6B;
+    clip-path: url(#clip);
+}
+
+path{
+    fill:grey;
+    opacity:0.5;
+    clip-path: url(#clip);
+}
+
+.textA{
+    dominant-baseline: middle;
+    clip-path: url(#clip);
+    font-size: 12px;
+}
+
+.textB{
+    dominant-baseline: middle;
+    clip-path: url(#clip);
+    font-size: 12px;
+}
+
+text{
+    dominant-baseline: middle;
+}
+
+.svg-container {
+    padding: 30px;
+}
+
+.svg {
+    height: 80%;
+    position: relative;
+    float: left;
+    margin-left: 7%;
+}
+
+.svg1, .svg2, .svg3, .svg4, .svg5, .svg6, .svg7, .svg8, .svg9, .svg10, .svg11, .svg12 {
+    bottom: 0;
+    width: 5px;
+    background-color: #DB874B;
+    position: absolute;
+
+}
+
+.chr {
+    position: absolute;
+    bottom: -30px;
+    left: -15px;
+}
+
+.gene {
+    width: 400%;
+    height: 5px;
+    background-color: rgb(76, 132, 183);
+    margin-left: -150%;
+    position: absolute;
+}
+
+.y-axis:first-child {
+    border-top: 1px solid;
+}
+
+.y-axis {
+    border-bottom: 1px solid;
+    width: 5px;
+    box-sizing: border-box;
+    border-right: 1px solid;
+}
+
+.y-data:first-child {
+    margin-top: -10px;
+}
+
+.y-data {
+    text-align: right;
+}
+
+
+path:hover {
+    fill: #bd5757;
+}
+
+a:focus {
+    outline: none;
+}
+
+
+

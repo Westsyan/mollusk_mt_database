@@ -1,0 +1,238 @@
+@()(implicit session: Session)
+    @english.home.main("Download") {
+
+        <style>
+
+
+
+                .pull-left .search input {
+                    height: 30px;
+                }
+
+
+                a {
+                    color: cornflowerblue;
+                }
+
+        </style>
+
+        <div id="content">
+            <h1 class="title">Download</h1>
+            <div class="line"></div>
+
+
+@*            <form class="registration-form form-horizontal" id="form" accept-charset="UTF-8" style="margin-top: 30px">
+
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2">Organelle:</label>
+                    <div class="col-sm-4">
+                        <select class="form-control" onchange="changeOrganelle(this)" name="organelle" id="organelle">
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2">Phylum:</label>
+                    <div class="col-sm-4">
+                        <select class="form-control" onchange="changePhylum(this)" name="phylum" id="phylum"></select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-2">Class:</label>
+                    <div class="col-sm-4">
+                        <select class="form-control" name="classes" id="classes"></select>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="actions col-sm-offset-2 col-sm-2">
+                        <button type="button" class="btn btn-primary" style="width: 90%;" id="search" onclick="getDownloadData()">
+                            Search</button>
+                    </div>
+                </div>
+
+
+            </form>
+            <hr>*@
+            <div id="result">
+                <div id="checkbox" class="checkbox">
+                </div>
+
+                <button type="button" class="btn btn-primary" onclick="DownloadSelect('genome')">Download Genome</button>
+
+                <button type="button" class="btn btn-primary" onclick="DownloadSelect('cds')">Download CDS</button>
+                <button type="button" class="btn btn-primary" onclick="DownloadSelect('pep')">Download PEP</button>
+                <div id="toolbar">
+                        &nbsp;
+                        Keyword：
+                </div>
+
+                <table class="display table table-bordered" id="table" data-pagination="true" data-search="true"
+                data-toolbar="#toolbar" data-page-list="[10, 25, 50, 100, all]" data-search-align="left" data-multiple-search="true">
+
+                </table>
+
+            </div>
+        </div>
+
+
+
+        <script>
+
+
+                let organelle = {};
+
+                $(function () {
+                    $('#table').bootstrapTable({
+
+                        columns: [
+                            [{
+                                checkbox: true,
+                                align: 'center'
+                            }, {
+                                field: "geneid",
+                                title: "ID",
+                                align: "center",
+                                halign: "center",
+                                valign: "middle",
+                                formatter: function (value, row) {
+                                    return "<a href='/US/mollusk/genome/genomeInfoPage?id=" + row.id + "' target='_blank' style='color: cornflowerblue;'>" + row.geneid + "</a>"
+                                }
+                            }, {
+                                field: "organism",
+                                title: "Organism",
+                                align: "center",
+                                halign: "center",
+                                valign: "middle"
+                            }, {
+                                field: "gb",
+                                title: "Genbank",
+                                align: "center",
+                                halign: "center",
+                                valign: "middle",
+                                formatter: function (value, row) {
+                                    return "<a target='_blank' href='/mollusk/download/downloadSelect?id=" + row.id
+                                            + "&fa=gb'>GB <i class='fa fa-download'></i></a>";
+                                }
+                            },{
+                                field: "genome",
+                                title: "Genome",
+                                align: "center",
+                                halign: "center",
+                                valign: "middle",
+                                formatter: function (value, row) {
+                                    return "<a target='_blank' href='/mollusk/download/downloadSelect?id=" + row.id
+                                            + "&fa=genome' style='color: cornflowerblue;'>Fasta <i class='fa fa-download'></i></a> ";
+                                }
+                            },{
+                                field: "gene",
+                                title: "Gene",
+                                align: "center",
+                                halign: "center",
+                                valign: "middle",
+                                formatter: function (value, row) {
+                                    return "<a target='_blank' href='/mollusk/download/downloadSelect?id=" + row.id
+                                             + "&fa=gene' style='color: cornflowerblue;'>Fasta <i class='fa fa-download'></i></a> ";
+                                }
+                            },
+                                {
+                                    field: "cds",
+                                    title: "CDS",
+                                    align: "center",
+                                    halign: "center",
+                                    valign: "middle",
+                                    formatter: function (value, row) {
+                                        return "<a target='_blank' href='/mollusk/download/downloadSelect?id=" + row.id
+                                                +  "&fa=cds' style='color: cornflowerblue;'>Fasta <i class='fa fa-download'></i></a> ";
+                                    }
+                                }, {
+                                field: "pep",
+                                title: "PEP",
+                                align: "center",
+                                halign: "center",
+                                valign: "middle",
+                                formatter: function (value, row) {
+                                    return "<a target='_blank' href='/mollusk/download/downloadSelect?id=" + row.id
+                                            + "&fa=pep' style='color: cornflowerblue;'>Fasta <i class='fa fa-download'></i></a> ";
+                                }
+                            }]]
+
+                    });
+
+                    $.getJSON("@routes.DownloadController.getDownloadJson()", function (data) {
+                        $('#table').bootstrapTable("load", data.json);
+
+                        organelle = data.json;
+
+                    console.log(data.json)
+/*                        $("#organelle").select2({
+                            data: [{
+                                "id": "cp",
+                                "text": "Chloroplast",
+                                "selected": true
+                            }, {
+                                "id": "mt",
+                                "text": "Mitochondria"
+                            }]
+                        });*/
+            /*            htmlPhylum("cp");
+                        htmlClass("cp", "Myzozoa");*/
+                    });
+
+
+
+                });
+
+                function getDownloadData() {
+                    console.log(organelle)
+                    $('#table').bootstrapTable("load", organelle);
+                }
+
+                function htmlPhylum(obj) {
+                    let phylum = [];
+                    $.each(organelle[obj], function (i) {
+                        phylum.push(i)
+                    });
+                    $("#phylum").empty().select2({data: phylum});
+                    $("#classes").empty().select2({data: organelle[obj][phylum[0]]});
+                    htmlClass(obj, phylum[0]);
+                }
+
+                function htmlClass(o, p) {
+                    let classes = [];
+                    $.each(organelle[o][p], function (i) {
+                        classes.push(i)
+                    });
+                    $("#classes").empty().select2({data: classes});
+                }
+
+
+                function changeOrganelle(obj) {
+                    const value = $(obj).find(">option:selected").val();
+                    htmlPhylum(value);
+                }
+
+                function changePhylum(obj) {
+                    const o = $("#organelle").find(">option:selected").val();
+                    const value = $(obj).find(">option:selected").val();
+                    htmlClass(o, value);
+                }
+
+
+                function DownloadSelect(obj) {
+                    const data = $("#table").bootstrapTable("getAllSelections");
+                    let id = [];
+                    $.each(data, function (i, v) {
+                        id.push(v.id);
+                    });
+                    window.open("/mollusk/download/downloadSelect?id=" + id + "&fa=" + obj);
+                }
+
+        </script>
+
+
+    }

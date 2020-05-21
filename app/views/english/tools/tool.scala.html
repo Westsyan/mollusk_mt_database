@@ -1,0 +1,105 @@
+@()(implicit session: Session)
+@english.home.main("Tools") {
+    <style>
+
+            a{
+                color:cornflowerblue;
+            }
+
+            table thead tr th {
+                text-align: center;
+            }
+
+            table tbody tr td:first-child{
+                vertical-align: middle;
+                text-align: center;
+            }
+
+            table tbody tr td:nth-child(3){
+                vertical-align: middle;
+            }
+
+            table tbody tr td:nth-child(4){
+                vertical-align: middle;
+                text-align: center;
+            }
+
+
+    </style>
+    <div id="content">
+        <h1 class="title">Tools</h1>
+        <div class="line"></div>
+
+
+
+        <table class="display table table-bordered" id="table">
+            <thead>
+                <tr>
+                    <th><h4>Name</h4></th>
+                    <th><h4>Description</h4></th>
+                    <th><h4>Origin</h4></th>
+                    <th><h4>Version</h4></th>
+                    <th><h4>Author</h4></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><h4><a href="@routes.ToolsController.blastBefore()">Blast</a></h4></td>
+                    <td>BLAST (basic local alignment search tool) is an algorithm for comparing primary
+                        biological sequence information, such as the amino-acid sequences of proteins or
+                        the nucleotides of DNA and/or RNA sequences.</td>
+                    <td><a href="https://blast.ncbi.nlm.nih.gov/Blast.cgi" target="_blank">https://blast.ncbi.nlm.nih.gov/Blast.cgi</a></td>
+                    <td>2.6.0</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><h4><a href="@routes.ToolsController.muscleBeforeUS()">Muscle</a></h4></td>
+                    <td>MUSCLE is one of the best-performing multiple alignment programs according to
+                        published benchmark tests, with accuracy and speed that are consistently better
+                        than CLUSTALW. MUSCLE can align hundreds of sequences in seconds. Most users
+                        learn everything they need to know about MUSCLE in a few minutes—only a handful
+                        of command-line options are needed to perform common alignment tasks.</td>
+                    <td><a href="http://www.drive5.com/muscle/" target="_blank">http://www.drive5.com/muscle/</a></td>
+                    <td>3.8.31</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><h4><a href="@routes.ToolsController.geneWiseBeforeUS()">Genewise</a></h4></td>
+                    <td>GeneWise compares a protein sequence to a genomic DNA sequence, allowing for
+                        introns and frameshifting errors. </td>
+                    <td></td>
+                    <td>wise2-4-1</td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td><h4><a href="@routes.ToolsController.lastzBeforeUS()">Lastz</a></h4></td>
+                    <td>This document describes installation and usage of the LASTZ sequence alignment
+                        program. LASTZ is a drop-in replacement for BLASTZ, and is backward compatible
+                        with BLASTZ's command-line syntax. That is, it supports all of BLASTZ's options
+                        but also has additional ones, and may produce slightly different alignment
+                        results. </td>
+                    <td><a href="http://www.bx.psu.edu/miller_lab/dist/README.lastz-1.02.00/_README.lastz-1.02.00.html" target="_blank">
+                        http://www.bx.psu.edu/miller_lab/dist/README.lastz-1.02.00/_README.lastz-1.02.00.html</a></td>
+                    <td>1.02.00</td>
+                    <td>Bob Harris  < rsharris at bx dot psu dot edu> </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+
+
+
+    </div>
+        <!-- End Content -->
+    <div class="clear"></div>
+
+    <script>
+
+        $(function () {
+            $("#table").bootstrapTable();
+        })
+    </script>
+
+}

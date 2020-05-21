@@ -1,0 +1,177 @@
+@()(implicit session: Session)
+@english.home.main("Browser - Genome") {
+    <div id="content">
+        <h1 class="title">Genome - Browser</h1>
+        <div class="line"></div>
+
+
+            <label>Taxonomic information：</label>
+            <div id="tax" class="checkbox"></div>
+
+            <label>Select the columns to display:</label>
+            <div id="checkbox" class="checkbox">
+            </div>
+
+            <div id="toolbar">
+                    &nbsp;
+                    Keyword：
+            </div>
+
+            <table class="display table table-bordered" id="table" data-pagination="true" data-search="true"
+            data-toolbar="#toolbar" data-page-list="[10, 25, 50, 100, all]" data-search-align="left" data-multiple-search="true">
+
+            </table>
+
+
+
+    </div>
+
+
+    <script>
+
+            $(function () {
+
+                const taxArray = ["Organism", "Photo", "Phylum", "Class", "Order", "Family", "Genus"]
+                const taxValues = ["organism", "photo", "phylum", "class", "order", "family", "genus"]
+                let taxHtml = "";
+                $.each(taxArray, function (n, value) {
+                    taxHtml += "<label style='margin-right: 15px'>" +
+                                    "<input type='checkbox' checked='checked' value='" + taxValues[n] + "' onclick=\"setColumns('" + taxValues[n] + "')\">" + value +
+                                    "</label>"
+                        }
+                );
+                $("#tax").html(taxHtml);
+
+
+                const array = [ "Length", "AT%", "Pubmed",
+                    "Journal", "Title", "Author", "Geographical position", "Collected", "Locality （GPS）", "Description",
+                    "Citation", "Link"];
+                const values = [ "length", "at", "pubmed",
+                    "journal", "title", "author", "position", "collected", "locality", "description", "citation", "link"];
+
+                let html = "";
+                $.each(array, function (n, value) {
+                            html += "<label style='margin-right: 15px'>" +
+                                    "<input type='checkbox' checked='checked' value='" + values[n] + "' onclick=\"setColumns('" + values[n] + "')\">" + value +
+                                    "</label>"
+                        }
+                );
+                $("#checkbox").append(html);
+
+                $('#table').bootstrapTable({
+                    columns: [{
+                            field: "geneid",
+                            title: "ID",
+                            formatter: function (value, row) {
+                                return "<a href='/US/mollusk/genome/genomeInfoPage?id=" + row.id + "' target='_blank' style='color: cornflowerblue;'>" + row.geneid + "</a>";
+                            }
+                        }, {
+                            field: "organism",
+                            title: "Organism"
+                        }, {
+                            field: "photo",
+                            title: "Photo",
+                            formatter: function (value, row) {
+                                return "<img src='/mollusk/utils/getGemomeImg?id=" + row.id + "' style='width: 100px'/>"
+                            }
+                        }, {
+                            field: "phylum",
+                            title: "Phylum"
+                        }, {
+                            field: "class",
+                            title: "Class"
+                        }, {
+                            field: "order",
+                            title: "Order"
+                        }, {
+                            field: "family",
+                            title: "Family"
+                        }, {
+                            field: "genus",
+                            title: "Genus"
+                        }, {
+                            field: "length",
+                            title: "Length"
+                        }, {
+                            field: "at",
+                            title: "AT%"
+                        }, {
+                            field: "pubmed",
+                            title: "Pubmed",
+                        }, {
+                            field: "journal",
+                            title: "Journal"
+                        }, {
+                            field: "title",
+                            title: "Title"
+                        }, {
+                            field: "author",
+                            title: "Author"
+                        }, {
+                            field: "position",
+                            title: "Geographical position"
+                        }, {
+                            field: "collected",
+                            title: "Collected"
+                        }, {
+                            field: "locality",
+                            title: "Locality （GPS）"
+                        }, {
+                            field: "description",
+                            title: "Description"
+                        }, {
+                            field: "citation",
+                            title: "Citation"
+                        }, {
+                            field: "link",
+                            title: "Link",
+                            formatter: function (value, row) {
+                               let links =  row.link.split(" ")
+                                let link = "";
+                                $.each(links,function (i,v) {
+                                    let href = v;
+                                    if(links.length > 1){
+                                       href =  href.substring(2,href.length);
+                                    }
+                                    link += "<div><a href='" + href + "' target='_blank'>Link" + (i+1) + "</a></div>"
+                                })
+                                return link;
+                            }
+                        }
+                        ]
+                });
+
+
+                let hiddenArray = ["phylum", "class", "order", "family", "pubmed",
+                    "journal", "title", "author", "position", "collected", "locality", "description", "citation", "link"];
+
+                $.each(hiddenArray, function (n, value) {
+                            $('#table').bootstrapTable('hideColumn', value);
+                            $("input:checkbox[value=" + value + "]").attr("checked", false)
+                        }
+                );
+
+                $.ajax({
+                    url: "@routes.GenomeController.getGenomeInfo()",
+                    type: "post",
+                    success: function (data) {
+                        $('#table').bootstrapTable("load", data);
+                    }
+                });
+
+            });
+
+            function setColumns(value) {
+                let element = $("input:checkbox[value=" + value + "]");
+
+                if (element.is(":checked")) {
+                    $('#table').bootstrapTable('showColumn', value);
+                } else {
+                    $('#table').bootstrapTable('hideColumn', value);
+                }
+            }
+
+    </script>
+
+
+}

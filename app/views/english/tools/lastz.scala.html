@@ -1,0 +1,253 @@
+@()(implicit session: Session)
+    @english.home.main("Lastz - Tools") {
+
+
+        <style>
+                #axtString {
+                    max-height: 300px;
+                }
+
+        </style>
+
+    <div id="content">
+        <h1 class="title">Tools - Lastz</h1>
+        <div class="line"></div>
+        <div class="tab_container" style="margin-bottom: 30px;padding-top: 30px">
+                <form class="registration-form form-horizontal" id="form"
+                accept-charset="UTF-8" method="post">
+
+                    <div class="form-group" >
+                        <label class="control-label col-sm-3">Enter target sequence:</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control monospace" name="targetText" rows="5"></textarea>
+                            <span class="help-block">e.g.,&nbsp;<a href="#"><em id="egTarget">
+                                example</em></a></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Or, upload file:</label>
+                        <div class="col-sm-7">
+                            <input type="file" class="file control-label" name="targetFile" data-show-preview="false"
+                            data-show-upload="false">
+                            <span class="help-block"><a href="@routes.UtilsController.downloadLastzTarfetExample()"
+                            target="_blank"><em>Example file</em></a></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" >
+                        <label class="control-label col-sm-3">Enter query sequences:</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control monospace" name="queryText" rows="5"></textarea>
+                            <span class="help-block">e.g.,&nbsp;<a href="#"><em id="egQuery">
+                                example</em></a></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Or, upload file:</label>
+                        <div class="col-sm-7">
+                            <input type="file" class="file control-label" name="queryFile" data-show-preview="false"
+                            data-show-upload="false">
+                            <span class="help-block"><a href="@routes.UtilsController.downloadLastzQueryExample()"
+                            target="_blank"><em>Example file</em></a></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="actions col-sm-offset-3 col-sm-3">
+                            <button type="button" class="button blue" id="search" onclick="mySearch()">
+                                Run</button>
+                        </div>
+
+                        <div class="actions  col-sm-2">
+                            <button type="reset" class="button blue">
+                                Reset</button>
+                        </div>
+                    </div>
+
+                </form>
+
+                <div id="result" style="display: none">
+                    <hr>
+                    <h4 style="color: black" id="missionResult">Result:</h4>
+                    <h5>Axt result:
+                        &nbsp;<button class="btn btn-primary" onclick="downloadAxt()"><i class="fa fa-download"></i>&nbsp;Download</button>
+                    </h5>
+                    <pre id="axtString" style="background-color: white"></pre>
+
+
+                    <div id="png1">
+                        <div id="download" style="margin-top: 20px">
+                            <button type="button" class="btn btn-primary" id="deleteButton" onclick="downloadPng1()"
+                            style="margin-bottom: 10px">
+                                <i class="fa fa-download"></i>&nbsp;download Parallel result file
+                            </button>
+                        </div>
+                        <div id="charts">
+                            <div>no picture result</div>
+                        </div>
+                    </div>
+
+                    <div id="png2">
+                        <div id="download">
+                            <button type="button" class="btn btn-primary" id="deleteButton" onclick="downloadPng2()"
+                            style="margin-bottom: 10px">
+                                <i class="fa fa-download"></i>&nbsp;download Xoy result file
+                            </button>
+                        </div>
+                        <div id="charts1">
+                            <div>no picture result</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <script>
+                var base641;
+                var base642;
+
+                $(function () {
+                    $('#egTarget').click(function () {
+                        $.ajax({
+                            url:"@routes.UtilsController.getLastzTarfetExample()",
+                            type:"post",
+                            success:function (data) {
+                                $("textarea[name='targetText']").val(data);
+                            }
+                        })
+                    });
+                    $('#egQuery').click(function () {
+                        $.ajax({
+                            url:"@routes.UtilsController.getLastzQueryExample()",
+                            type:"post",
+                            success:function (data) {
+                                $("textarea[name='queryText']").val(data);
+                            }
+                        })
+                    });
+
+                });
+
+                function downloadAxt() {
+                    var fileName = "all.axt";
+                    var content = $("#axtString").text();
+                    var blob = new Blob([content], {
+                        type: "text/plain;charset=utf-8"
+                    });
+                    saveAs(blob, fileName)
+                }
+
+                function targetCheck() {
+                    var text = $("textarea[name='targetText']").val();
+                    var file = $("input[name='targetFile']").val();
+                    var b = true;
+                    if (!file && !text) {
+                        b = false;
+                        swal("Error", "Please enter sequence or upload file!", "error")
+                    } else if (file && text) {
+                        b = false;
+                        swal("Error", "Please either enter target sequence into the box or upload a file, not both!", "error")
+                    }
+                    return b
+                }
+
+                function queryCheck() {
+                    var text = $("textarea[name='queryText']").val();
+                    var file = $("input[name='queryFile']").val();
+                    var b = true;
+                    if (!file && !text) {
+                        b = false;
+                        swal("Error", "Please enter sequence or upload file!", "error")
+                    } else if (file && text) {
+                        b = false;
+                        swal("Error", "Please either enter query sequence into the box or upload a file, not both!", "error")
+                    }
+                    return b
+                }
+
+                function mySearch() {
+                    var form = $("#form")
+                    if (targetCheck() && queryCheck()) {
+                        var form1 = new FormData($("#form")[0]);
+                        var element = "<div><span id='info'>Running...</span>&nbsp;<img class='runningImage' src='@routes.Assets.versioned("images/running2.gif")' style='width: 30px;height: 20px;'></div>"
+                        var index = layer.alert(element, {
+                            skin: 'layui-layer-lan'
+                            , closeBtn: 0,
+                            title: "Info",
+                            btn: []
+                        });
+                        $.ajax({
+                            url: "@routes.ToolsController.lastz()",
+                            type: "post",
+                            processData: false,
+                            contentType: false,
+                            data: form1,
+                            success: function (data) {
+                                layer.close(index);
+                                if (data.valid === "false") {
+                                    swal("Error", data.message, "error");
+                                    $("#result").hide()
+                                } else {
+                                    base641 = data.base641;
+                                    base642 = data.base642;
+                                    if(base641 === ""){
+                                        $("#png1").hide();
+                                    }else{
+                                        $("#charts").html("<img src='data:image/png;base64," + data.base641 + "' style='width:100%'>");
+                                        $("#png1").show();
+                                    }
+                                    if(base642 === ""){
+                                        $("#png2").hide();
+                                    }else{
+                                        $("#charts1").html("<img src='data:image/png;base64," + data.base642 + "' style='width:100%'>");
+                                        $("#png2").show();
+                                    }
+                                    $("#axtString").text(data.axtString);
+                                    $("#result").show()
+                                }
+                            }
+                        });
+                    }
+                }
+
+                function downloadPng1() {
+                    var fileName = "Target-Query.parallel.png";
+                    var byteArrays = base642binaryArray(base641);
+                    var blob = new Blob(byteArrays, {
+                        type: "image/png"
+                    });
+                    saveAs(blob, fileName)
+                }
+
+                function base642binaryArray(content) {
+                    var byteCharacters = atob(content);
+                    var byteArrays = [];
+                    var sliceSize = 512;
+                    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+                        var slice = byteCharacters.slice(offset, offset + sliceSize);
+                        var byteNumbers = new Array(slice.length);
+                        for (var i = 0; i < slice.length; i++) {
+                            byteNumbers[i] = slice.charCodeAt(i);
+                        }
+                        var byteArray = new Uint8Array(byteNumbers);
+                        byteArrays.push(byteArray);
+                    }
+                    return byteArrays
+                }
+
+                function downloadPng2() {
+                    var fileName = "Target-Query.xoy.png";
+                    var byteArrays = base642binaryArray(base642);
+                    var blob = new Blob(byteArrays, {
+                        type: "image/png"
+                    });
+                    saveAs(blob, fileName)
+                }
+
+        </script>
+
+
+    }

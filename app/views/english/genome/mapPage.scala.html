@@ -1,0 +1,179 @@
+@(key: String)(implicit session: Session)
+@english.home.main("Geographical distribution  in World") {
+
+    <div id="content" class="container">
+        <h1 class="title"> Geographical distribution in World </h1>
+        <div class="line"></div>
+
+
+        <div id="worldmap" style="height: 650px;"></div>
+
+        <div style="display: none;" id="showTable">
+            <div id="toolbar"></div>
+
+            <table class="display table table-bordered" id="table" data-pagination="true" data-search="true"
+            data-toolbar="#toolbar" data-page-list="[10, 25, 50, 100, all]" data-search-align="left" data-multiple-search="true"
+            data-show-export="false" data-export-types="['excel','txt']" data-export-data-type="all"
+            >
+
+            </table>
+        </div>
+
+    </div>
+
+    <script src="@routes.Assets.versioned("Highmaps-6.1.0/highmaps.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.versioned("Highmaps-6.1.0/exporting.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.versioned("Highmaps-6.1.0/data.js")" type="text/javascript"></script>
+    <script>
+
+            $(function () {
+                if ("@key" != "0") {
+                    getInfo("@key");
+                }
+
+                $('#table').bootstrapTable({
+                    columns: [
+                        {
+                            field: "geneid",
+                            title: "GeneID",
+                            formatter: function (value, row) {
+                                return "<a href='/US/mollusk/genome/genomeInfoPage?id=" + row.id + "' target='_blank' style='color: cornflowerblue;'>" + row.geneid + "</a>";
+                            }
+                        }, {
+                            field: "organism",
+                            title: "Organism"
+                        }, {
+                            field: "photo",
+                            title: "Photo",
+                            formatter: function (value, row) {
+                                return "<img src='/mollusk/utils/getGemomeImg?id=" + row.id + "' style='width: 100px'/>"
+                            }
+                        }, {
+                            field: "phylum",
+                            title: "Phylum"
+                        }, {
+                            field: "class",
+                            title: "Class"
+                        }, {
+                            field: "order",
+                            title: "Order"
+                        }, {
+                            field: "family",
+                            title: "Family"
+                        }, {
+                            field: "genus",
+                            title: "Genus"
+                        }
+                       ]
+
+                });
+
+
+                // 地图路径，参考 https://img.hcharts.cn/mapdata/index.html
+                var map = getMapName('map'),
+                        url = '/assets/Highmaps-6.1.0/world.js';
+
+                // 动态加载地图数据文件并生成图表。
+                loadScript(url, function () {
+                    // 生成随机数据
+                    var mapdata = Highcharts.maps[map.path],
+                            data = [];
+
+
+                    function drawMap(datas) {
+                        Highcharts.each(datas, function (v, i) {
+                            data.push({
+                                'hc-key': v.key,
+                                value: v.num
+                            })
+                        })
+
+                        // 初始化图表
+                        $('#worldmap').highcharts('Map', {
+                            title: {
+                                text: map.cname || map.name
+                            },
+                            subtitle: {
+                                text: ''
+                            },
+                            mapNavigation: {
+                                enabled: true,
+                                enableMouseWheelZoom: false,
+                                buttonOptions: {
+                                    verticalAlign: 'bottom'
+                                }
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            colorAxis: {
+                                min: 0,
+                                stops: [
+                                    [0, '#EFEFFF'],
+                                    [0.5, Highcharts.getOptions().colors[0]],
+                                    [1, Highcharts.Color(Highcharts.getOptions().colors[0]).brighten(-0.5).get()]
+                                ]
+                            },
+                            series: [{
+                                data: data,
+                                mapData: mapdata,
+                                joinBy: 'hc-key',
+                                name: 'Species',
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                states: {
+                                    hover: {
+                                        color: '#a4edba'
+                                    },
+                                    select: {
+                                        color: 'orange',
+                                        borderColor: 'black',
+                                        dashStyle: 'shortdot'
+                                    }
+                                },
+                                dataLabels: {
+                                    enabled: false,
+                                    format: '{point.name}'
+                                },
+                                point: {
+                                    events: {
+                                        click: function () {
+                                            getInfo(this["hc-key"]);
+                                        }
+                                    }
+                                }
+                            }]
+                        });
+                    }
+
+                    $.ajax({
+                        url: "@routes.LocationController.getWorldData()",
+                        type: "post",
+                        success: function (datas) {
+                            drawMap(datas)
+                        }
+                    })
+                });
+            })
+
+            function getInfo(obj) {
+                let index = layer.load(1);
+                $.ajax({
+                    url: "/US/mollusk/genome/getInfoByLocation?location=" + obj,
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                        $("#table").bootstrapTable('load', data);
+
+                        $("#showTable").show();
+                        layer.close(index);
+                    }
+                });
+            }
+
+
+
+    </script>
+
+
+}

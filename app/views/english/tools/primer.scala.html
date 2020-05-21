@@ -1,0 +1,521 @@
+@()(implicit session: Session)
+@english.home.main("") {
+    <style>
+            p {
+                font-size: 16px;
+            }
+
+            .length {
+                color: #3498db;
+                width: 60px;
+            }
+
+            .blue {
+                color: #3498db;
+            }
+
+            .orange {
+                color: #f39c12;
+            }
+
+            td {
+                font-size: 16px;
+            }
+
+            .table > thead > tr > th {
+                border-bottom: none;
+            }
+
+            .table > tbody > tr > td {
+                border-top: none;
+            }
+
+            .tableHead {
+                background-color: #3498db;
+                color: white;
+                font-size: 16px;
+            }
+
+            .tableText {
+                background-color: #F39C12;
+                color: white;
+            }
+
+            .tableText:hover {
+                background-color: #e08e0b;
+            }
+
+            .tableBorder {
+                background-color: #F9F9F9;
+            }
+
+            .tableBorder:hover {
+                background-color: #ECF0F1;
+            }
+
+            .tableNoBorder:hover {
+                background-color: #ECF0F1;
+            }
+
+
+
+    </style>
+
+    <div id="content-wrapper" class="large-text">
+
+        <section class="indent">
+
+            <div class="container">
+
+                <hgroup class="page-head">
+                    <h2 style="color: #207499">Design Primer</h2>
+                </hgroup>
+
+                <hr style="border-top: 1px solid #d9d9d9;"/>
+
+
+                <div class="tab-pane active" id="primer">
+                    <form class="form-horizontal" method="get" id="form">
+
+
+                        <div class="form-group" id="blastnQueryContent">
+                            <label class="control-label col-sm-3">Chromesome:</label>
+                            <div class="col-sm-4">
+                                <input class="form-control" name="chr" id="chr"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">Start position:</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" name="start" id="start" placeholder="Input region start position">
+                            </div>
+
+                            <label class="control-label col-sm-2">End position:</label>
+                            <div class="col-sm-3">
+                                <input class="form-control" name="end" id="end" placeholder="Input region end position">
+                            </div>
+
+                        </div>
+
+
+                        <h4 style="margin-left: 40px">Parameter Selection:</h4>
+
+                        <div class="form-group">
+
+                            <label class="control-label col-sm-3">Sequence target:</label>
+                            <div class="col-sm-4">
+                                <input class="form-control" name="SEQUENCE_TARGET"
+                                id="SEQUENCE_TARGET" value="50,350">
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label class="control-label col-sm-3">Product Size Ranges:</label>
+                            <div class="col-sm-4">
+                                <input class="form-control" name="PRIMER_PRODUCT_SIZE_RANGE" id="PRIMER_PRODUCT_SIZE_RANGE"
+                                value="100-300,300-600,600-1000">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">Optimal primer size:</label>
+                            <div class="col-sm-1">
+                                <input class="form-control" name="PRIMER_OPT_SIZE" id="PRIMER_OPT_SIZE" value="20">
+                            </div>
+
+                            <label class="control-label col-sm-2">Max primer size:</label>
+                            <div class="col-sm-1">
+                                <input class="form-control" name="PRIMER_MAX_SIZE" id="PRIMER_MAX_SIZE" value="25">
+                            </div>
+
+                            <label class="control-label col-sm-2">Min primer size:</label>
+                            <div class="col-sm-1">
+                                <input class="form-control" name="PRIMER_MIN_SIZE" id="PRIMER_MIN_SIZE" value="18">
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">Optimal primer TM:</label>
+                            <div class="col-sm-1">
+                                <input class="form-control" name="PRIMER_OPT_TM" id="PRIMER_OPT_TM" value="59.0">
+                            </div>
+
+                            <label class="control-label col-sm-2">Max primer TM:</label>
+                            <div class="col-sm-1">
+                                <input class="form-control" name="PRIMER_MAX_TM" id="PRIMER_MAX_TM" value="62.0">
+                            </div>
+
+                            <label class="control-label col-sm-2">Min primer TM:</label>
+                            <div class="col-sm-1">
+                                <input class="form-control" name="PRIMER_MIN_TM" id="PRIMER_MIN_TM" value="57.0">
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">Optimal GC percent:</label>
+                            <div class="col-sm-1">
+                                <input class="form-control" name="PRIMER_OPT_GC_PERCENT" id="PRIMER_OPT_GC_PERCENT" value="50.0">
+                            </div>
+
+                            <label class="control-label col-sm-2">Max GC percent:</label>
+                            <div class="col-sm-1">
+                                <input class="form-control" name="PRIMER_MAX_GC" id="PRIMER_MAX_GC" value="80.0">
+                            </div>
+
+                            <label class="control-label col-sm-2">Min GC percent:</label>
+                            <div class="col-sm-1">
+                                <input class="form-control" name="PRIMER_MIN_GC" id="PRIMER_MIN_GC" value="20.0">
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">Max #N's accepted:</label>
+                            <div class="col-sm-1">
+                                <input class="form-control" name="PRIMER_MAX_NS_ACCEPTED" id="PRIMER_MAX_NS_ACCEPTED" value="0">
+                            </div>
+
+                            <label class="control-label col-sm-2">Max Poly-X:</label>
+                            <div class="col-sm-1">
+                                <input class="form-control" name="PRIMER_MAX_POLY_X" id="PRIMER_MAX_POLY_X" value="10">
+                            </div>
+
+                            <label class="control-label col-sm-2">Max Internal Poly-X:</label>
+                            <div class="col-sm-1">
+                                <input class="form-control" name="PRIMER_INTERNAL_MAX_POLY_X" id="PRIMER_INTERNAL_MAX_POLY_X"
+                                value="15">
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">Max Self Complementarity:</label>
+                            <div class="col-sm-2">
+                                <input class="form-control" name="PRIMER_MAX_SELF_ANY" id="PRIMER_MAX_SELF_ANY" value="45.0">
+                            </div>
+
+                            <label class="control-label col-sm-3">Max 3' Self Complementarity:</label>
+                            <div class="col-sm-2">
+                                <input class="form-control" name="PRIMER_MAX_SELF_END" id="PRIMER_MAX_SELF_END" value="35.0">
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">Max Pair Complementarity:</label>
+                            <div class="col-sm-2">
+                                <input class="form-control" name="PRIMER_PAIR_MAX_COMPL_ANY" id="PRIMER_PAIR_MAX_COMPL_ANY"
+                                value="45.0" style="width: 150%">
+                            </div>
+
+                            <label class="control-label col-sm-3">Max 3' Pair Complementarity:</label>
+                            <div class="col-sm-2">
+                                <input class="form-control" name="PRIMER_PAIR_MAX_COMPL_END" id="PRIMER_PAIR_MAX_COMPL_END"
+                                value="35.0">
+                            </div>
+
+                        </div>
+
+
+                        <hr>
+                        <div class="form-group">
+                            <div class="actions col-sm-offset-3 col-sm-3">
+                                <button type="button" class="btn btn-primary" style="width: 90%;" id="search"
+                                onclick="blast('form')">
+                                    Search</button>
+                            </div>
+                            <div class="actions  col-sm-3">
+                                <button type="reset" class="btn btn-primary" style="width: 90%;">
+                                    Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+
+                <a href="#result"><div id="showResult"></div></a>
+
+                <div id="result" style="display: none;">
+
+                </div>
+
+
+                <script>
+
+
+                        $(function () {
+                            formValidation();
+                        });
+
+
+                        function formValidation() {
+                            $('#form').formValidation({
+                                framework: 'bootstrap',
+                                icon: {
+                                    valid: 'glyphicon glyphicon-ok',
+                                    invalid: 'glyphicon glyphicon-remove',
+                                    validating: 'glyphicon glyphicon-refresh'
+                                },
+                                fields: {
+                                    start: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: 'Start position is required！'
+                                            },
+                                            numeric: {
+                                                message: 'Start position must be number！'
+                                            },
+                                            greaterThan: {
+                                                value: 0,
+                                                message: "Start position must greater than or equal to 0！"
+                                            },
+                                            callback: {
+                                                message: 'Start position must less than end position!',
+                                                callback: function (value, validator) {
+                                                    var end = $("#end").val();
+                                                    if (end === "" || value === "") {
+                                                        return true;
+                                                    } else {
+                                                        validator.updateStatus("end", validator.STATUS_VALID, 'callback');
+                                                        return parseInt(value) < parseInt(end);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    end: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: 'End positionis required！'
+                                            },
+                                            numeric: {
+                                                message: 'End position must be number！'
+                                            },
+                                            greaterThan: {
+                                                value: 0,
+                                                message: "End position must greater than or equal to 0！"
+                                            },
+                                            callback: {
+                                                message: 'End position must greater than start position!',
+                                                callback: function (value, validator) {
+                                                    var start = $("#start").val();
+                                                    if (start === "" || value === "") {
+                                                        return true;
+                                                    } else {
+                                                        validator.updateStatus("start", validator.STATUS_VALID, 'callback');
+                                                        return parseInt(start) < parseInt(value);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    SEQUENCE_TARGET: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: 'Sequence target is required！'
+                                            }
+                                        }
+                                    },
+                                    PRIMER_OPT_SIZE: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: 'Optimal primer size is required！'
+                                            },
+                                            integer: {
+                                                message: 'Optimal primer size must be integer！'
+                                            }
+                                        }
+                                    },
+                                    PRIMER_MAX_SIZE: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: '>Max primer size is required！'
+                                            },
+                                            integer: {
+                                                message: '>Max primer size must be integer！'
+                                            }
+                                        }
+                                    },
+                                    PRIMER_MIN_SIZE: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: 'Min primer size is required！'
+                                            },
+                                            integer: {
+                                                message: 'Min primer size must be integer！'
+                                            }
+                                        }
+                                    },
+                                    PRIMER_OPT_TM: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: 'Optimal primer TM is required！'
+                                            },
+                                            numeric: {
+                                                message: 'Optimal primer TM must be number！'
+                                            }
+                                        }
+                                    },
+                                    PRIMER_MAX_TM: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: 'Max primer TM is required！'
+                                            },
+                                            numeric: {
+                                                message: 'Max primer TM must be number！'
+                                            }
+                                        }
+                                    },
+                                    PRIMER_MIN_TM: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: 'Min primer TM is required！'
+                                            },
+                                            numeric: {
+                                                message: 'Min primer TM must be number！'
+                                            }
+                                        }
+                                    },
+                                    PRIMER_OPT_GC_PERCENT: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: 'Optimal GC percent is required！'
+                                            },
+                                            numeric: {
+                                                message: 'Optimal GC percent must be number！'
+                                            }
+                                        }
+                                    },
+                                    PRIMER_MAX_GC: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: 'Max GC percent is required！'
+                                            },
+                                            numeric: {
+                                                message: 'Max GC percent must be number！'
+                                            }
+                                        }
+                                    },
+                                    PRIMER_MIN_GC: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: 'Min GC percent is required！'
+                                            },
+                                            numeric: {
+                                                message: 'Min GC percent must be number！'
+                                            }
+                                        }
+                                    },
+                                    PRIMER_MAX_NS_ACCEPTED: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: "Max #N's accepted is required！"
+                                            },
+                                            integer: {
+                                                message: "Max #N's accepted must be integer！"
+                                            }
+                                        }
+                                    },
+                                    PRIMER_MAX_POLY_X: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: 'Max Poly-X is required！'
+                                            },
+                                            integer: {
+                                                message: 'Max Poly-X must be integer！'
+                                            }
+                                        }
+                                    },
+                                    PRIMER_INTERNAL_MAX_POLY_X: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: 'Max Internal Poly-X is required！'
+                                            },
+                                            integer: {
+                                                message: 'Max Internal Poly-X must be integer！'
+                                            }
+                                        }
+                                    },
+                                    PRIMER_MAX_SELF_ANY: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: 'Max Self Complementarity is required！'
+                                            },
+                                            numeric: {
+                                                message: 'Max Self Complementarity must be number！'
+                                            }
+                                        }
+                                    },
+                                    PRIMER_MAX_SELF_END: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: "Max 3' Self Complementarity is required！"
+                                            },
+                                            numeric: {
+                                                message: "Max 3' Self Complementarity must be number！"
+                                            }
+                                        }
+                                    },
+                                    PRIMER_PAIR_MAX_COMPL_ANY: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: 'Max Pair Complementarity is required！'
+                                            },
+                                            numeric: {
+                                                message: 'Max Pair Complementarity must be number！'
+                                            }
+                                        }
+                                    },
+                                    PRIMER_PAIR_MAX_COMPL_END: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: "Max 3' Pair Complementarity is required！"
+                                            },
+                                            numeric: {
+                                                message: "Max 3' Pair Complementarity must be number！"
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        }
+
+
+                        function blast(formId) {
+
+                            var form1 = new FormData($("#" + formId)[0]);
+                            var index = layer.load(1, {
+                                shade: [0.1, '#fff']
+                            });
+                            $.ajax({
+                                url: "@routes.ToolsController.primer()",
+                                type: "post",
+                                processData: false,
+                                contentType: false,
+                                data: form1,
+                                success: function (data) {
+                                    layer.close(index);
+
+                                    if (data.valid === "false") {
+                                        swal("Error", data.message, "error");
+                                        $("#result").hide()
+                                    } else {
+                                        $("#result").html(data.result);
+                                        $("#result").show();
+                                        $("#showResult").click();
+
+                                    }
+                                }
+                            });
+                        }
+                </script>
+
+
+}

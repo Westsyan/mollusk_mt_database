@@ -1,0 +1,102 @@
+
+<style>
+    .top-logo{
+        color: #CCCECE;
+        font-size: 20px;
+        line-height: 40px
+    }
+</style>
+
+<header id="header">
+
+        <!-- Website Logo Place -->
+    <div id="logo-container">
+
+            <p style="color: #419AAD;font-size: 35px;">PODB</p>
+            <span class="tagline">藻类细胞器数据库</span>
+
+    </div>
+
+    <ul class="social-nav" style="text-align: center">
+        <li class="rss">
+            <a><button type="button" onclick="toEnglish()" style="background-color: transparent;
+                border: transparent" class="top-logo">EN</button>
+            </a>
+        </li>
+        <li class="rss"><a target="_blank" href="#"><i class="fa fa-envelope-o top-logo"></i></a></li>
+        <li class="phone" style="line-height: 40px;"><i class="fa fa-phone top-logo" style="float: left;margin-left: 10px;" ></i><span>180.0123.4567</span></li>
+    </ul>
+
+
+    <nav class="main-nav clearfix">
+
+            <!-- MAIN NAVIGATION -->
+        <div class="menu-div">
+            <ul>
+                <li>
+                    <a href="@routes.HomeController.homeCN()">主页</a>
+                </li>
+                <li>
+                    <a href="#">叶绿体</a>
+                    <ul>
+                        <li><a href="#">Genome</a></li>
+                        <li><a href="#">ORF</a></li>
+                        <li><a href="#">Function</a></li>
+                        <li><a href="#">Genome Browser</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">线粒体</a>
+                    <ul>
+                        <li><a href="#">Genome</a></li>
+                        <li><a href="#">ORF</a></li>
+                        <li><a href="#">Function</a></li>
+                        <li><a href="#">Genome Browser</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">分析工具</a>
+                    <ul>
+                        <li><a href="@routes.ToolsController.blastBefore()">BLAST</a></li>
+                        <li><a href="@routes.ToolsController.seqFetchBefore()">Sequences Fetch</a></li>
+                        <li><a href="#">Synteny Analysis</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">上传</a>
+                </li>
+                <li>
+                    <a href="#">下载</a>
+                </li>
+                <li>
+                    <a href="#">参考文献</a>
+                </li>
+                <li>
+                    <a href="#">联系我们</a>
+
+                </li>
+
+            </ul>
+        </div>
+
+            <!-- GLOBAL SEARCH -->
+        <form method="get" action="#" id="topsearch">
+            <p>
+                <input type="text" placeholder="搜索" name="s" id="tsearch" style="height: 28px;width: 200px;">
+                <button type="submit" id="topsubmit" style="top: 3px;right: 14px;font-size: 15px;color: #C0DEE6;"><i class="fa fa-search"></i> </button>
+            </p>
+        </form>
+    </nav>
+</header>
+
+    <script>
+
+            function toEnglish() {
+                var path = window.location.pathname;
+                var parameter = window.location.search;
+                var path1 = path.split("/");
+                var path2 = "/english/" + path1[2] + "/" + path1[3] + "/" + path1[4] + parameter;
+                window.location.href = path2;
+            }
+
+    </script>

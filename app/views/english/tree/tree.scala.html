@@ -1,0 +1,141 @@
+@()(implicit session: Session)
+@english.home.main("Taxonomy Tree") {
+
+    <style>
+            .text {
+                text-indent: 2em;
+                font-size: 16px;
+            }
+
+            #content ul li {
+                padding: 10px 10px 10px 15px;
+            }
+
+            .fvgenome {
+                margin-top: 20px;
+                width: 100%;
+            }
+
+            .fvgenome img {
+                width: 150px;
+                height: 100px;
+                float: left;
+            }
+
+            .fvgenome div {
+                margin-left: 10px;
+                float: left;
+                margin-top: 20px;
+                height: 100px;
+                width: 350px;
+            }
+
+            .fvgenome a {
+                color: cornflowerblue;
+            }
+    </style>
+
+    <div id="content">
+        <h1 class="title">Taxonomy Tree</h1>
+        <div class="line"></div>
+
+
+        <div id="treeDraw" class="col-sm-5" style="height: 600px;
+            overflow: auto;"></div>
+
+        <div id="chart" class="col-sm-7" style="height: 800px;
+            width: 49%;
+            float: right;
+            border: solid 1px #DDDDDD;
+            overflow: auto;
+            padding-top: 10px;
+            padding-left: 30px">
+
+            <div id="introduce">
+
+                <h2>Favourite genomes</h2>
+
+                <div class="fvgenome">
+                    <img src='/mollusk/utils/getGemomeImg?id=1'>
+                    <div>
+                        <h3><a href="/US/mollusk/genome/genomeInfoPage?id=1" target="_blank">
+                            Chaetopleura apiculata</a></h3>
+                        <h4>KY824658</h4>
+                    </div>
+                </div>
+
+                <div class="fvgenome">
+                    <img src='/mollusk/utils/getGemomeImg?id=2'>
+                    <div>
+                        <h3><a href="/US/mollusk/genome/genomeInfoPage?id=2" target="_blank">Katharina tunicata</a></h3>
+                        <h4>NC_001636</h4>
+                    </div>
+                </div>
+
+                <div class="fvgenome">
+                    <img src='/mollusk/utils/getGemomeImg?id=3'>
+                    <div style="">
+                        <h3><a href="/US/mollusk/genome/genomeInfoPage?id=3" target="_blank">
+                            Sypharochiton sinclairi</a></h3>
+                        <h4>NC_024173</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div id="html"></div>
+
+        </div>
+
+    </div>
+
+    <script src="@routes.Assets.versioned("bootstrap-treeview/bootstrap-treeview.js")"></script>
+
+    <script>
+            $(function () {
+
+                let index = layer.load(1);
+
+                $.ajax({
+                    url: "@routes.TreeController.getTreeJson()",
+                    type: "post",
+                    dataType: "json",
+                    success: function (result) {
+                        $('#treeDraw').treeview({
+                            data: result,         // 数据源
+                            highlightSelected: true,    //是否高亮选中
+                            emptyIcon: '',   //没有子节点的节点图标
+                            multiSelect: false,    //多选
+                            selectedBackColor: 'undefined',
+                            selectedColor: 'undefined',
+                            showTags: true,
+                            levels: 1
+                        });
+                        layer.close(index);
+                    },
+                    error: function () {
+                        layer.close(index);
+                        swal("错误", "树形结构加载失败。", "error")
+                    }
+                });
+            });
+
+
+            function getInfo(id) {
+                $.ajax({
+                    url: "/mollusk/tree/getTreeData?id=" + id,
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        $("#introduce").hide();
+                        $("#html").empty();
+                        $("#html").html(data.html);
+                    }
+                })
+            }
+
+
+    </script>
+
+}
+
+

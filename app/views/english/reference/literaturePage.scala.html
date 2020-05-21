@@ -1,0 +1,77 @@
+@()(implicit session: Session)
+    @english.home.main("Chloroplast Literature") {
+
+        <div id="content">
+            <h1 class="title">Literature</h1>
+            <div class="line"></div>
+
+
+            <div id="toolbar"></div>
+
+            <div class="table-contain">
+                <table id="table" class="table table-hover  table-bordered table-striped" data-pagination="true" data-search="true"
+                data-toolbar="#toolbar" data-search-align="left" data-page-list="[10]" data-page-size="10"
+                data-multiple-search="true"
+                style="border: 0px solid transparent;">
+                </table>
+            </div>
+
+        </div>
+
+
+        <script>
+
+
+                $(function () {
+
+                    $('#table').bootstrapTable({
+                        columns: [
+                            [{
+                                field: "title",
+                                title: "Title",
+                                halign: "center",
+                                valign: "middle",
+                                formatter: function (value, row) {
+                                    if (row.pubmed.indexOf("http") == -1) {
+                                        return "<a href='https://www.ncbi.nlm.nih.gov/pubmed/" + row.pubmed + "' target='_blank' >" + row.title + "</a>"
+                                    } else {
+                                        return "<a href='" + row.pubmed + "'  target='_blank'>" + row.title + "</a>"
+                                    }
+                                }
+                            }, {
+                                field: "journal",
+                                title: "Journal",
+
+                                halign: "center",
+                                valign: "middle"
+                            }, {
+                                field: "authors",
+                                title: "Authors",
+
+                                halign: "center",
+                                valign: "middle"
+                            }, {
+                                field: "gene",
+                                title: "Gene",
+                                align: "center",
+                                halign: "center",
+                                valign: "middle"
+                            }
+                            ]]
+                    });
+
+                    $.ajax({
+                        url: "@routes.LiteratureController.getAllLiterature()",
+                        type: "post",
+                        success: function (data) {
+                            $('#table').bootstrapTable("load", data);
+                        }
+                    });
+
+                })
+
+
+        </script>
+
+
+    }

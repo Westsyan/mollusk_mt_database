@@ -1,0 +1,318 @@
+@()(implicit session: Session)
+    @english.home.main("Genewise - Tools") {
+
+        <style>
+                .layui-layer-zangqing{
+                    background-color: #52A7B9;
+                }
+        </style>
+    <div id="content">
+        <h1 class="title">Tools - Genewise</h1>
+        <div class="line"></div>
+        <div class="tab_container" style="margin-bottom: 30px;padding-top: 30px">
+
+                    <form class="registration-form form-horizontal" id="form" accept-charset="UTF-8">
+
+                        <div class="form-group" id="hand">
+                            <label class="control-label col-sm-2">Protein sequence:</label>
+                            <div class="col-sm-8">
+                                <textarea name="proteinSeq" id="proteinSeq" class="form-control monospace" rows="5"></textarea>
+                                <span class="help-block">e.g.,&nbsp;<a href="#"><em id="egProtein">
+                                    example</em></a></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">DNA sequence:</label>
+                            <div class="col-sm-8">
+                                <textarea name="dnaSeq" id="dnaSeq" class="form-control monospace" rows="5"></textarea>
+                                <span class="help-block">e.g.,&nbsp;<a href="#"><em id="egDna">
+                                    example</em></a></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Show Parameters:</label>
+                            <div class="col-sm-2">
+                                <select id="para" name="para" class="form-control">
+                                    <option selected="selected" value=" -para ">
+                                        ON</option> <option value=" ">OFF</option> </select>
+                            </div>
+
+                            <label class="control-label col-sm-3">Pretty ASCII:</label>
+                            <div class="col-sm-2">
+                                <select id="pretty" name="pretty" class="form-control">
+                                    <option selected="selected" value=" -pretty ">ON</option>
+                                    <option value=" ">OFF</option> </select>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="control-label col-sm-2">Gene Structure:</label>
+                            <div class="col-sm-2">
+                                <select id="genes" name="genes" class="form-control">
+                                    <option selected="selected" value=" -genes ">ON</option>
+                                    <option value=" ">OFF</option>
+                                </select>
+                            </div>
+
+
+                            <label class="control-label col-sm-3">Protein Translation:</label>
+                            <div class="col-sm-2">
+                                <select id="trans" name="trans" class="form-control">
+                                    <option selected="selected" value=" -trans ">ON</option> <option value=" ">
+                                    OFF</option> </select>
+                            </div>
+
+                        </div>
+                            <div class="form-group">
+
+                            <label class="control-label col-sm-2">cDNA:</label>
+                            <div class="col-sm-2">
+                                <select id="cdna" name="cdna" class="form-control">
+                                    <option selected="selected" value=" -cdna ">ON</option> <option value=" ">
+                                    OFF</option> </select>
+                            </div>
+
+                            <label class="control-label col-sm-3">EMBL Feature Table:</label>
+                            <div class="col-sm-2">
+                                <select id="embl" name="embl" class="form-control">
+                                    <option selected="selected" value=" -embl ">ON</option> <option value=" ">
+                                    OFF</option> </select>
+                            </div>
+                        </div>
+
+                        <div id="otherArgs" style="display: none;">
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-2">Ace File Gene Structure:</label>
+                                <div class="col-sm-2">
+                                    <select id="ace" name="ace" class="form-control">
+                                        <option selected="selected" value=" -ace ">ON</option> <option value=" ">
+                                        OFF</option> </select>
+                                </div>
+
+                                <label class="control-label col-sm-3">GFF Output:</label>
+                                <div class="col-sm-2">
+                                    <select id="gff" name="gff" class="form-control">
+                                        <option selected="selected" value=" -gff ">ON</option> <option value=" ">
+                                        OFF</option> </select>
+                                </div>
+
+
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-2">EMBL Feature For diana:</label>
+                                <div class="col-sm-2">
+                                    <select id="diana" name="diana" class="form-control">
+                                        <option selected="selected" value=" -diana ">ON</option> <option value=" ">
+                                        OFF</option> </select>
+                                </div>
+
+                                <label class="control-label col-sm-3">Local/Global Mode:</label>
+                                <div class="col-sm-2">
+                                    <select id="init" name="init" class="form-control">
+                                        <option selected="selected" value="local">Local</option> <option value="global">
+                                        Global</option> </select>
+                                </div>
+
+                            </div>
+                                <div class="form-group">
+
+                                <label class="control-label col-sm-2">Splice Site:</label>
+                                <div class="col-sm-2">
+                                    <select id="splice" name="splice" class="form-control">
+                                        <option value=" -nosplice_gtag ">
+                                            Modelled</option> <option selected="selected" value=" ">
+                                        GT/AG only</option> </select>
+                                </div>
+
+                                <label class="control-label col-sm-3">Random (Null) Model:</label>
+                                <div class="col-sm-2">
+                                    <select id="random" name="random" class="form-control">
+                                        <option selected="selected" value="syn">
+                                            Synchronous model</option> <option value="flat">
+                                        Flat model</option> </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-2">Algorithm:</label>
+                                <div class="col-sm-2">
+                                    <select id="alg" name="alg" class="form-control">
+                                        <option selected="selected" value="623">
+                                            GeneWise 623</option> <option value="2193">
+                                        GeneWise 2193</option> </select>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group" id="more">
+                            <div class="actions col-sm-offset-2 col-sm-2">
+                                <button type="button" class="btn btn-primary" onclick="more()">
+                                    More options...</button>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="actions col-sm-offset-2 col-sm-2">
+                                <button type="button" class="button blue"  id="search" onclick="mySearch()">
+                                    Run</button>
+                            </div>
+                        </div>
+
+
+                    </form>
+                    <hr>
+                    <div id="result" style="display: none;">
+                        <h4>Result:
+                            &nbsp;<button class="btn btn-primary" onclick="downloadOut()" style="margin-bottom: 10px"><i class="fa fa-download"></i>&nbsp;Download</button>
+                        </h4>
+                        <pre id="out" style="background-color: white"></pre>
+                    </div>
+
+                </div>
+
+        </div>
+
+        <script>
+
+                function downloadOut() {
+                    var fileName = "out.txt";
+                    var content = $("#out").text();
+                    var blob = new Blob([content], {
+                        type: "text/plain;charset=utf-8"
+                    });
+                    saveAs(blob, fileName)
+                }
+
+                var geneIds = [];
+                $(function () {
+
+                    function extractor(query) {
+                        var result = /([^,]+)$/.exec(query);
+                        if (result && result[1])
+                            return result[1].trim();
+                        return '';
+                    }
+
+                    formValidation();
+
+                    $('#egProtein').click(function () {
+                        var eg = ">example1\n" +
+                                "MGQGTPGGMGKQGGAPGDRKPGGDGDKKDRKFEPPAAPSRVGRKQRKQKGPEAAARLPNV" +
+                                "VMKVEKAPLESYADIGGLDAQIQEIKEAVELPLTHPELYEDIGIRPPKGVILYGEPGTGK" +
+                                "KVTHADFKKAKEKVMFKKKEGVPEGLYM ";
+                        $('#proteinSeq').val(eg);
+                        $("#form").formValidation("revalidateField", "proteinSeq");
+                        return false
+                    });
+
+                    $('#egDna').click(function () {
+                        var eg = ">example2\n" +
+                                "AATATCACCAGTGTCTTATAAGCAATTACACCAATTTTATTGGGGGTGTTCCTCAATAGT" +
+                                "TCGACGATCATGATGTCATGTCACCGAGGAATGAAAACGGAGCAGATAATTCTCTAATAG" +
+                                "TGAGACATACTCCAATTCTTTATAACTCTACCACCTTCAATATACCTTTTAGATTTTATA" +
+                                "AAGCCCAAGATACTTGAAAAGAACAGAAAAACAGAAG";
+                        $('#dnaSeq').val(eg);
+                        $("#form").formValidation("revalidateField", "dnaSeq");
+                        return false
+                    });
+
+                })
+
+
+                function more() {
+                    $("#otherArgs").show();
+                    $("#more").hide()
+                }
+
+                function mySearch() {
+                    var value = $("#geneId").val();
+                    var form = $("#form");
+                    var fv = form.data("formValidation");
+                    if ($.inArray(value, geneIds) === -1) {
+                        fv.updateStatus("geneId", 'INVALID', 'blank');
+                    }
+                    fv.validate()
+                    if (fv.isValid()) {
+                        var element = "<div><span id='info'>Running...</span>&nbsp;<img class='runningImage' src='/assets/images/running2.gif' style='width: 30px;height: 20px;'></div>"
+                        var index = layer.alert(element, {
+                            skin: 'layui-layer-lan'
+                            , closeBtn: 0,
+                            title: "Info",
+                            btn: []
+                        });
+                        $.ajax({
+                            url: "@routes.ToolsController.genewise()",
+                            type: "post",
+                            data: $("#form").serialize(),
+                            success: function (data) {
+                                layer.close(index);
+                                if (data.valid === "false") {
+                                    swal("Error", data.message, "error");
+                                    $("#result").hide()
+                                } else {
+                                    $("#out").html(data);
+                                    $("#result").show()
+
+                                }
+                            }
+                        });
+                    }
+                }
+
+                function formValidation() {
+                    $('#form').formValidation({
+                                framework: 'bootstrap',
+                                icon: {
+                                    valid: 'glyphicon glyphicon-ok',
+                                    invalid: 'glyphicon glyphicon-remove',
+                                    validating: 'glyphicon glyphicon-refresh'
+                                },
+                                fields: {
+                                    proteinSeq: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: 'Protein sequence is required！'
+                                            },
+                                            regexp: {
+                                                regexp: /^>.*\n[a-zA-Z\n]+\s*$/,
+                                                message: "Protein sequence is invalid！"
+                                            }
+                                        }
+                                    },
+                                    dnaSeq: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: 'DNA sequence is required！'
+                                            },
+                                            regexp: {
+                                                regexp: /^>.*\n[ATCGNatcgn\n]+\s*$/,
+                                                message: "DNA sequence is invalid！"
+                                            }
+                                        }
+                                    },
+                                    geneId: {
+                                        validators: {
+                                            notEmpty: {
+                                                message: 'Gene Id is required！'
+                                            },
+                                            blank: {
+                                                message: "Gene Id is invalid!"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    );
+                }
+
+        </script>
+
+    }

@@ -1,0 +1,49 @@
+<!-- Begin Sidebar -->
+<div id="sidebar" style="height: 100%">
+    <div id="logo"><a href="index.html"><img src="/assets/model/images/logo.png" alt="Mollusk" /></a></div>
+
+        <!-- Begin Menu -->
+    <div id="menu" class="menu-v">
+        <ul>
+            <li><a href="@routes.HomeController.index()" id="home">Home</a></li>
+            <li><a href="@routes.GenomeController.browserPage()" id="genome">Genome</a>
+@*                <ul>
+                    <li><a href="@routes.GenomeController.browserPage()">Browser</a></li>
+                    <li><a href="@routes.LocationController.mapPage()">Geographical distribution</a></li>
+                </ul>*@
+            </li>
+            <li><a href="#" id="tools">Tools</a>
+                <ul>
+                    <li><a href="@routes.ToolsController.blastBefore()">Blast</a></li>
+                    <li><a href="@routes.ToolsController.muscleBeforeUS()">Muscle</a></li>
+                    <li><a href="@routes.ToolsController.geneWiseBeforeUS()">Genewise</a></li>
+                    <li><a href="@routes.ToolsController.lastzBeforeUS()">Lastz</a></li>
+                </ul>
+            </li>
+            <li><a href="@routes.TreeController.tree()" id="tree">Taxonomy Tree</a></li>
+            <li><a href="@routes.LiteratureController.literaturePage()" id="literature">Literature</a></li>
+            <li><a href="@routes.DownloadController.downloadBeforeUS()" id="download">Download</a></li>
+            <li><a href="@routes.HomeController.aboutPage()" id="about">About</a></li>
+        </ul>
+    </div>
+
+    <div class="sidebox">
+        <div class="search">
+            <h3>Search</h3>
+            <form class="searchform" method="get"  action="/US/mollusk/search/searchBefore">
+                <input type="text" id="s" name="input" placeholder="Keyword" src="height:30px"/>
+            </form>
+            <div class="clear"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+         const href = window.location.href;
+         const array = href.split("/");
+         const code = array[array.length - 2];
+         $("#" + code).addClass('active');
+
+
+
+    </script>

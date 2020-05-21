@@ -1,0 +1,132 @@
+@()(implicit session: Session)
+@english.home.main("Submit Data"){
+
+
+    <hgroup class="page-head">
+        <h2>
+            <span>Submit</span> Data
+        </h2>
+    </hgroup>
+
+
+    <div id="container" class="clearfix">
+        <div id="content" class="full-width">
+            <form class="registration-form form-horizontal" id="form" accept-charset="UTF-8">
+
+
+                <div class="form-group col-sm-12">
+                    <label class="control-label col-sm-2">Type:</label>
+                    <div class="col-sm-8">
+                        <label><input type="radio" name="t"/>Chloroplast</label>
+                        <label><input type="radio" name="t"/>Mitochondria</label>
+                    </div>
+                </div>
+
+                <div class="form-group col-sm-6" >
+                    <label class="control-label col-sm-4">Phylum:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" name="phylum" id="phylum"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group col-sm-6" >
+                    <label class="control-label col-sm-4">Class:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" name="class" id="class"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group col-sm-6" >
+                    <label class="control-label col-sm-4">Order:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" name="order" id="order"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group col-sm-6" >
+                    <label class="control-label col-sm-4">Family:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" name="family" id="family"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group col-sm-6" >
+                    <label class="control-label col-sm-4">Genus:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" name="genus" id="genus"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group col-sm-6" >
+                    <label class="control-label col-sm-4">Species:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" name="species" id="species"
+                        />
+                    </div>
+                </div>
+
+
+                <div class="form-group col-sm-6" >
+                    <label class="control-label col-sm-4">Author:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" name="author" id="author"
+                        />
+                    </div>
+                </div>
+
+
+                <div class="form-group col-sm-6" >
+                    <label class="control-label col-sm-4">Collection places:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" name="species" id="species"
+                        />
+                    </div>
+                </div>
+
+
+                <div class="form-group col-sm-6" >
+                    <label class="control-label col-sm-4">Reference:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" name="species" id="species"
+                        />
+                    </div>
+                </div>
+
+
+                <div class="form-group col-sm-6" >
+                    <label class="control-label col-sm-4">Journal:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" name="species" id="species"
+                        />
+                    </div>
+                </div>
+
+
+                <div class="form-group col-sm-12" >
+                    <label class="control-label col-sm-2">Upload seqs:</label>
+                    <div class="col-sm-8">
+                        <input id="input-1" type="file" class="file control-label" name="file" data-show-preview="false"
+                        data-show-upload="false">
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="actions col-sm-offset-2 col-sm-2">
+                        <button type="button" class="btn btn-primary" style="width: 90%;" id="search" onclick="mySearch()">
+                            Submit Data</button>
+                    </div>
+                </div>
+
+
+
+            </form>
+        </div>
+    </div>
+
+}
