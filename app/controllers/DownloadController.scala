@@ -15,7 +15,7 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class DownloadController @Inject()(cc: ControllerComponents,
-                                   genomeDao: GenomeDao)(implicit exec: ExecutionContext) extends AbstractController(cc) with MyConfig{
+                                   genomeDao: GenomeDao)(implicit exec: ExecutionContext) extends AbstractController(cc) with MyConfig {
 
 
   def downloadBeforeUS = Action { implicit request =>
@@ -24,13 +24,12 @@ class DownloadController @Inject()(cc: ControllerComponents,
   }
 
 
-  def getDownloadJson = Action{implicit request=>
-    val genome =  genomeDao.getAllInfo.toAwait.map{x=>
-      Json.obj("id"->x.id,"geneid"->x.geneid,"organism"->x.organism)
+  def getDownloadJson = Action { implicit request =>
+    val genome = genomeDao.getAllInfo.toAwait.map { x =>
+      Json.obj("id" -> x.id, "geneid" -> x.geneid, "organism" -> x.organism)
     }
     Ok(Json.obj("json" -> genome))
   }
-
 
 
   def downloadExample(example: String) = Action { implicit request =>
@@ -71,9 +70,9 @@ class DownloadController @Inject()(cc: ControllerComponents,
       val r = x.trim.split(":").last.split("to").map(_.trim).sortBy(_.toInt)
       val ra = name + ":" + r.mkString("-")
       val command = if (new File(windowsPath).exists()) {
-        Utils.path + "/tools/samtools-0.1.19/samtools.exe faidx "  + fasta + " " + ra
+        Utils.path + "/tools/samtools-0.1.19/samtools.exe faidx " + fasta + " " + ra
       } else {
-        "samtools faidx " + fasta  + " " + ra
+        "samtools faidx " + fasta + " " + ra
       }
       execCommand.exec(command)
     }
@@ -88,7 +87,7 @@ class DownloadController @Inject()(cc: ControllerComponents,
 
   }
 
-  def downloadBlastByName(name: String,db:String) = Action {
+  def downloadBlastByName(name: String, db: String) = Action {
     val fasta = db match {
       case "blastnGenome" => s"${Utils.path}/blastData/genome/mollusk.fasta"
       case "blastn" => s"${Utils.path}/blastData/gene/mollusk.fasta"
@@ -115,18 +114,16 @@ class DownloadController @Inject()(cc: ControllerComponents,
 
   }
 
+  def downloadSelect(id: String, fa: String) = Action { implicit request =>
+    val ids = id.split(",")
 
-
-  def downloadSelect(id:String,fa:String) = Action { implicit request =>
-    val ids =   id.split(",")
-
-    val suffix = if(fa == "gb") ".gb" else ".fasta"
-    val csv =  ids.map { id =>
-      Utils.readFileToString(Utils.path + "/download/" + fa + "/"  + id + suffix).trim
+    val suffix = if (fa == "gb") ".gb" else ".fasta"
+    val csv = ids.map { id =>
+      Utils.readFileToString(Utils.path + "/download/" + fa + "/" + id + suffix).trim
     }.mkString("\n")
-    val file = if(ids.length == 1){
+    val file = if (ids.length == 1) {
       genomeDao.getById(id.toInt).toAwait.geneid
-    }else {
+    } else {
       "select"
     }
     Ok(csv).withHeaders(
@@ -135,11 +132,26 @@ class DownloadController @Inject()(cc: ControllerComponents,
       CONTENT_DISPOSITION -> (s"attachment; filename=$file.$fa"),
       CONTENT_TYPE -> "application/x-download"
     )
-
   }
 
 
-
+  def downloadType(name: String, fa: String) = Action { implicit request =>
+    val suffix = fa match {
+      case "gb" => ".gb"
+      case "gene" => ".gene"
+      case "genome" => ".fasta"
+      case "cds" => ".gb.cds"
+      case "pep" => ".gb.pep"
+    }
+    val file = Utils.path + "/fasta/" + fa + "/" + name + suffix
+    val text = Utils.readFileToString(file).trim
+    Ok(text).withHeaders(
+      //缓存
+      CACHE_CONTROL -> "max-age=3600",
+      CONTENT_DISPOSITION -> (s"attachment; filename=$name.$fa"),
+      CONTENT_TYPE -> "application/x-download"
+    )
+  }
 
 
 }

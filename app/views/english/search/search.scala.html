@@ -117,7 +117,7 @@
                             formatter: function (value, row, index) {
                                 let genelink =  "/US/mollusk/genome/genomeInfoPage?id=" + row.id;
                                 const main = "<div class='result-border'><a href='" + genelink + "' target='_blank'>" + row.geneid + "</a>" +
-                                        "<a href='@routes.GenomeController.browserPage()' target='_blank'><span class='type-right'>" +
+                                        "<a href='@routes.GenomeController.browserPage("")' target='_blank'><span class='type-right'>" +
                                         "&nbsp;" + row.species + "&nbsp;</span></a><hr>";
                                 let option = "";
                                 $.each(row.result, function (i, v) {

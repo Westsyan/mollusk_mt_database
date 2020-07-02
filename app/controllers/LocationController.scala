@@ -58,4 +58,33 @@ class LocationController @Inject()(cc: ControllerComponents,
     }
   }
 
+  def getWorldPostion(id: Int) = Action {
+    val mmap = TableUtils.mmap
+    val maxmap = TableUtils.maxmap
+    val position =genomeDao.getById(id).toAwait.position
+
+    val world = position.replaceAll(" and ", ",").split(",").flatMap { x =>
+      if (maxmap.getOrElse(x.trim, "") != "") {
+        maxmap(x.trim).map(_._3)
+      } else {
+        if (x.indexOf(":") != -1) {
+          val w = mmap.filter(_._2 == x.split(":").last.trim).map(_._3)
+          if (w.isEmpty) {
+            mmap.filter(_._2 == x.split(":").head.trim).map(_._3)
+          } else {
+            w
+          }
+        } else {
+          mmap.filter(_._2 == x.trim).map(_._3)
+        }
+      }
+    }.distinct
+    val json = world.map { y =>
+      Json.obj("key" -> y)
+    }
+
+    Ok(Json.toJson(json))
+
+  }
+
 }

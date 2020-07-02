@@ -23,7 +23,7 @@
                 type: "post",
                 success: function (data) {
                     $("#resultContent").html(data.html);
-                    let host = "http://210.22.121.250:20795"
+                    let host =  window.location.hostname;
                     if ("@types" === "blastnGenome") {
                         $.each(data.block, function (i, v) {
                             const id = "#synteny" + v.index;
@@ -36,12 +36,14 @@
                             const gb = data.B.name.split("-")[1];
                             const start = data.B.min;
                             const end = data.B.max;
-                            $(iframe).attr("src", host + "/?data=my_data/MODB/" + gb + "/data&loc=" + name +
+                            $(iframe).attr("src","http://" + host + ":8080/?data=MODB/" + gb +"/data&loc=" + gb +
                                     ":" + start + ".." + end + "&tracks=DNA,Annotation&tracklist=0&nav=1&overview=0");
                         })
                     } else {
                         $(".blastDraw").hide();
                     }
+
+                    $(".others").hide();
                 }
             })
 

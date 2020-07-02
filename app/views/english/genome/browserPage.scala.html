@@ -1,27 +1,49 @@
-@()(implicit session: Session)
+@(classes: String)(implicit session: Session)
 @english.home.main("Browser - Genome") {
+
+    <style>
+
+        .pull-right{
+            margin-right: -115px;
+        }
+
+        .jump-page{
+            display: unset;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .table>tbody>tr{
+            height: 135px;
+        }
+
+    </style>
     <div id="content">
-        <h1 class="title">Genome - Browser</h1>
+        <h1 class="title">
+            @if(classes == "") {
+                Genome
+            } else {
+                @classes
+            }
+        - Browser</h1>
         <div class="line"></div>
 
 
-            <label>Taxonomic information：</label>
-            <div id="tax" class="checkbox"></div>
+        <label>Taxonomic information：</label>
+        <div id="tax" class="checkbox"></div>
 
-            <label>Select the columns to display:</label>
-            <div id="checkbox" class="checkbox">
-            </div>
+        <label>Select the columns to display:</label>
+        <div id="checkbox" class="checkbox">
+        </div>
 
-            <div id="toolbar">
-                    &nbsp;
-                    Keyword：
-            </div>
+        <div id="toolbar">
+                &nbsp;
+                Keyword：
+        </div>
 
-            <table class="display table table-bordered" id="table" data-pagination="true" data-search="true"
-            data-toolbar="#toolbar" data-page-list="[10, 25, 50, 100, all]" data-search-align="left" data-multiple-search="true">
-
-            </table>
-
+        <table class="display table table-bordered" id="table" data-pagination="true" data-search="true"
+        data-toolbar="#toolbar" data-page-list="[10, 25, 50, 100, all]" data-search-align="left" data-multiple-search="true">
+        </table>
 
 
     </div>
@@ -30,12 +52,21 @@
     <script>
 
             $(function () {
+                let taxArray = [];
+                $.ajax({
+                    url: "@routes.GenomeController.getSataNums(classes)",
+                    type: "post",
+                    async: false,
+                    success: function (data) {
+                        taxArray = ["Photo", data.phylum, data.classes, data.order, data.family, data.genus]
+                    }
+                })
 
-                const taxArray = ["Organism", "Photo", "Phylum", "Class", "Order", "Family", "Genus"]
-                const taxValues = ["organism", "photo", "phylum", "class", "order", "family", "genus"]
+
+                const taxValues = ["photo", "phylum", "class", "order", "family", "genus"]
                 let taxHtml = "";
                 $.each(taxArray, function (n, value) {
-                    taxHtml += "<label style='margin-right: 15px'>" +
+                            taxHtml += "<label style='margin-right: 15px'>" +
                                     "<input type='checkbox' checked='checked' value='" + taxValues[n] + "' onclick=\"setColumns('" + taxValues[n] + "')\">" + value +
                                     "</label>"
                         }
@@ -43,11 +74,11 @@
                 $("#tax").html(taxHtml);
 
 
-                const array = [ "Length", "AT%", "Pubmed",
-                    "Journal", "Title", "Author", "Geographical position", "Collected", "Locality （GPS）", "Description",
-                    "Citation", "Link"];
-                const values = [ "length", "at", "pubmed",
-                    "journal", "title", "author", "position", "collected", "locality", "description", "citation", "link"];
+                const array = ["Length", "AT%", "Pubmed",
+                    "Journal", "Title", "Author", "Geographical position", "Collected", "Description",
+                    "Assembly status","NCBI status"];
+                const values = ["length", "at", "pubmed",
+                    "journal", "title", "author", "position", "collected", "description","assembly","ncbi"];
 
                 let html = "";
                 $.each(array, function (n, value) {
@@ -58,107 +89,165 @@
                 );
                 $("#checkbox").append(html);
 
-                $('#table').bootstrapTable({
+
+                $("#table").bootstrapTable({
+                    method: 'post',
+                    url: "@routes.GenomeController.getGenomeInfo(classes)",
+                    sidePagination: "server",
+                    pageNumber: 1,
+                    pagination: true,
+                    pageList: [10, 25, 50, 100],
+                    contentType: "application/x-www-form-urlencoded",
                     columns: [{
-                            field: "geneid",
-                            title: "ID",
-                            formatter: function (value, row) {
-                                return "<a href='/US/mollusk/genome/genomeInfoPage?id=" + row.id + "' target='_blank' style='color: cornflowerblue;'>" + row.geneid + "</a>";
+                        field: "organism",
+                        title: "Organism",
+                        valign: "middle",
+                        height:135,
+                        formatter: function (value, row) {
+                            return "<a href='/US/mollusk/genome/genomeInfoPage?id=" + row.id + "' target='_blank' style='color: cornflowerblue;'><i>" + row.organism + "</i></a>"
+                        }
+                    }, {
+                        field: "geneid",
+                        title: "ID",
+                        valign: "middle",
+                        formatter: function (value, row) {
+                            return "<a href='/US/mollusk/genome/genomeInfoPage?id=" + row.id + "' target='_blank' style='color: cornflowerblue;'>" + row.geneid + "</a>";
+                        }
+                    }, {
+                        field: "photo",
+                        title: "Photo",
+                        align:"center",
+                        halign: "center",
+                        valign: "middle",
+                        formatter: function (value, row) {
+                            if(row.photos == "true"){
+                                return "<img src='/mollusk/utils/getGemomeImg?geneid=" + row.geneid + "' style='height: 130px;margin: 0 auto;'/>"
+                            }else{
+                                return "Still Collecting Photos"
                             }
-                        }, {
-                            field: "organism",
-                            title: "Organism"
-                        }, {
-                            field: "photo",
-                            title: "Photo",
-                            formatter: function (value, row) {
-                                return "<img src='/mollusk/utils/getGemomeImg?id=" + row.id + "' style='width: 100px'/>"
-                            }
-                        }, {
-                            field: "phylum",
-                            title: "Phylum"
-                        }, {
-                            field: "class",
-                            title: "Class"
-                        }, {
-                            field: "order",
-                            title: "Order"
-                        }, {
-                            field: "family",
-                            title: "Family"
-                        }, {
-                            field: "genus",
-                            title: "Genus"
-                        }, {
-                            field: "length",
-                            title: "Length"
-                        }, {
-                            field: "at",
-                            title: "AT%"
-                        }, {
-                            field: "pubmed",
-                            title: "Pubmed",
-                        }, {
-                            field: "journal",
-                            title: "Journal"
-                        }, {
-                            field: "title",
-                            title: "Title"
-                        }, {
-                            field: "author",
-                            title: "Author"
-                        }, {
-                            field: "position",
-                            title: "Geographical position"
-                        }, {
-                            field: "collected",
-                            title: "Collected"
-                        }, {
-                            field: "locality",
-                            title: "Locality （GPS）"
-                        }, {
-                            field: "description",
-                            title: "Description"
-                        }, {
-                            field: "citation",
-                            title: "Citation"
-                        }, {
-                            field: "link",
-                            title: "Link",
-                            formatter: function (value, row) {
-                               let links =  row.link.split(" ")
-                                let link = "";
-                                $.each(links,function (i,v) {
-                                    let href = v;
-                                    if(links.length > 1){
-                                       href =  href.substring(2,href.length);
-                                    }
-                                    link += "<div><a href='" + href + "' target='_blank'>Link" + (i+1) + "</a></div>"
-                                })
-                                return link;
+
+                        }
+                    }, {
+                        field: "phylum",
+                        title: "Phylum",
+                        valign: "middle",
+                    }, {
+                        field: "class",
+                        title: "Class",
+                        valign: "middle"
+                    }, {
+                        field: "order",
+                        title: "Order",
+                        valign: "middle"
+                    }, {
+                        field: "family",
+                        title: "Family",
+                        valign: "middle"
+                    }, {
+                        field: "genus",
+                        title: "Genus",
+                        valign: "middle"
+                    }, {
+                        field: "length",
+                        title: "Length",
+                        valign: "middle",
+                        formatter: function (i, v) {
+                            let length = String(v.length);
+                            return length.replace(/\d{1,3}(?=(\d{3})+$)/g, function (s) {
+                                return s + ','
+                            })
+                        }
+                    }, {
+                        field: "ath",
+                        title: "AT%",
+                        valign: "middle"
+                    }, {
+                        field: "pubmed",
+                        title: "Pubmed",
+                        valign: "middle",
+                        formatter: function (value, row) {
+                            if (row.pubmed.indexOf("http") == -1) {
+                                return "<a href='https://www.ncbi.nlm.nih.gov/pubmed/" + row.pubmed + "' target='_blank' >" + row.pubmed + "</a>"
+                            } else {
+                                return "<a href='" + row.pubmed + "'  target='_blank'>" + row.pubmed + "</a>"
                             }
                         }
-                        ]
+                    }, {
+                        field: "journal",
+                        title: "Journal",
+                        valign: "middle"
+                    }, {
+                        field: "title",
+                        title: "Title",
+                        valign: "middle"
+                    }, {
+                        field: "author",
+                        title: "Author",
+                        valign: "middle"
+                    }, {
+                        field: "position",
+                        title: "Geographical position",
+                        valign: "middle"
+                    }, {
+                        field: "collected",
+                        title: "Collected",
+                        valign: "middle"
+                    }, {
+                        field: "description",
+                        title: "Description",
+                        valign: "middle"
+                    }, {
+                        field: "assembly",
+                        title: "Assembly status",
+                        valign: "middle"
+                    }, {
+                        field: "ncbi",
+                        title: "NCBI status",
+                        valign: "middle"
+                    }
+                    ],
+                    onPostBody:function () {
+                        //console.log("行数据渲染完成!");
+                        var totalPages = $("#table").bootstrapTable("getOptions").totalPages;
+                        var pageNumber = $("#table").bootstrapTable("getOptions").pageNumber;
+                        var goInputWidth = 45;//输入框默认宽度
+                        var maxLen = (""+totalPages).length;
+                        //根据总页数设定跳转页面输入框宽度
+                        if (totalPages>999)
+                            goInputWidth = maxLen*10+15;
+                        var $pageGo = $('<span style="padding-left: 5px;">. Jump to<input type="number" maxlength="'
+                                + maxLen+ '" min="1" max="' + totalPages
+                                + '" class="form-control jump-page" id="c_jump-to-page" value="'
+                                + pageNumber+ '" style="width: '+goInputWidth+'px;" />/'
+                                +totalPages+'&nbsp;</span>');
+                        var $go = $("<a href=\"javascript:;\">Go</a>");
+                        $pageGo.append($go);
+                        $(".pagination-detail").append($pageGo);
+                        //页码范围限定(部分浏览器min~max失效时)
+                        $pageGo.change(function () {
+                            var goPage = $('#c_jump-to-page').val();
+                            if (goPage<1)
+                                $('#c_jump-to-page').val(1);
+                            if (goPage>totalPages)
+                                $('#c_jump-to-page').val(totalPages);
+                        });
+                        //跳转到
+                        $go.click(function () {
+                            var goPage = parseInt($('#c_jump-to-page').val());
+                            if (goPage!=pageNumber)
+                                $("#table").bootstrapTable('selectPage', parseInt(goPage));
+                        });
+                    }
                 });
 
-
                 let hiddenArray = ["phylum", "class", "order", "family", "pubmed",
-                    "journal", "title", "author", "position", "collected", "locality", "description", "citation", "link"];
+                    "journal", "title", "author", "position", "collected", "description","ncbi"];
 
                 $.each(hiddenArray, function (n, value) {
                             $('#table').bootstrapTable('hideColumn', value);
                             $("input:checkbox[value=" + value + "]").attr("checked", false)
                         }
                 );
-
-                $.ajax({
-                    url: "@routes.GenomeController.getGenomeInfo()",
-                    type: "post",
-                    success: function (data) {
-                        $('#table').bootstrapTable("load", data);
-                    }
-                });
-
             });
 
             function setColumns(value) {

@@ -44,7 +44,7 @@ object Search {
   }
 
   def getKeyWord(input: String, key: String) = {
-    val regex = ("(?i)" + key.split(" ").mkString("|")).r
+    val regex = ("(?i)" + key.trim.split(" ").mkString("|")).r
     regex.replaceAllIn(input,m=>"<span style='color:red;'>" + m + "</span>")
   }
 

@@ -25,5 +25,24 @@ class GenomeDao  @Inject()(protected val dbConfigProvider: DatabaseConfigProvide
     db.run(Genome.filter(_.id === id).result.head)
   }
 
+  def getByClasses(classes:String) : Future[Seq[GenomeRow]] = {
+    db.run(Genome.filter(_.classes === classes).result)
+  }
+
+  def addStatus(id:Int,assembly:String,ncbi:String) : Future[Unit] = {
+    db.run(Genome.filter(_.id === id).map(x=>(x.assembly,x.ncbi)).update((assembly,ncbi))).map(_=>())
+  }
+
+  def updatePosition(id:Int,position:String) : Future[Unit] = {
+    db.run(Genome.filter(_.id === id).map(_.position).update(position)).map(_=>())
+  }
+
+  def updateCitation(id:Int,citation:String) : Future[Unit] = {
+    db.run(Genome.filter(_.id === id).map(_.citation).update(citation)).map(_=>())
+  }
+
+  def updateLink(id:Int,link:String):Future[Unit] = {
+    db.run(Genome.filter(_.id === id).map(_.link).update(link)).map(_=>())
+  }
 
 }

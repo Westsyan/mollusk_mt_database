@@ -1,0 +1,48 @@
+@import models.Tables.GenomeRow
+@(row: GenomeRow)(implicit session: Session)
+@english.home.main("") {
+
+
+    <div id="content">
+        <h1 class="title">
+            <a href="@routes.LiteratureController.citationPage()">Citation</a>
+            - @row.organism </h1>
+        <div class="line"></div>
+
+        <h2>Citation</h2>
+
+        <div id="citations"></div>
+        <script>
+
+                let gt = new RegExp("&gt;", "g");
+                let lt = new RegExp("&lt;", "g");
+                let quot = new RegExp("&quot;", "g");
+                let citation = "@{
+                       val r = "(http|https):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&:/~\\+#]*[\\w\\-\\@?^=%&/~\\+#])?".r
+                        r.replaceAllIn(row.citation, replacer => {
+                        val v = replacer.group(0)
+                        s"""<a href="${v}" target="_blank">${v}</a>"""
+                    })
+                }".replace(gt, ">").replace(lt, "<").replace(quot, '"')
+
+                $.each(citation.split("|"), function (i, v) {
+                    $("#citations").append("<p>" + v + "</p>")
+                })
+
+        </script>
+
+
+        <h2>Link</h2>
+        @if(row.link != "Noinformation") {
+            @for(link <- row.link.split("\t")) {
+                <p><a href="@link" target="_blank">@link</a></p>
+            }
+        }else{
+            <p>No information.</p>
+        }
+
+
+    </div>
+
+
+}

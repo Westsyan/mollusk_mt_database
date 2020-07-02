@@ -11,13 +11,15 @@ object getGeneByFastaAndGff {
 
   def main(args: Array[String]): Unit = {
 
-  val gffs = new File("D:\\软体动物线粒体数据库\\demogff").listFiles()
-  val fas = new File("D:\\软体动物线粒体数据库\\demofasta").listFiles()
+  val gffs = new File("D:\\软体动物线粒体数据库\\gff").listFiles()
+  val fas = new File("D:\\软体动物线粒体数据库\\fasta").listFiles()
 
     gffs.foreach{x=>
       val name = x.getName.split('.').head
+     val n= x.getName.split('.').dropRight(2).mkString(".")
+      println(n)
       val fa = fas.find(_.getName.startsWith(name)).head
-      getGene(x.getAbsolutePath,fa.getAbsolutePath,s"I:\\mollusk_mt_database\\fasta\\gene/$name.gene")
+      getGene(x.getAbsolutePath,fa.getAbsolutePath,s"D:/软体动物线粒体数据库\\gene/$n.gene")
 
     }
 

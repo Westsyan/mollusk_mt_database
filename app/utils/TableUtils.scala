@@ -2,6 +2,7 @@ package utils
 
 import java.lang.reflect.Field
 
+import models.Tables.GenomeRow
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json.JsObject
@@ -20,6 +21,7 @@ object TableUtils {
 
   var searchSeq : Seq[(Int,String)] = Seq()
 
+  var genomeRow : Seq[GenomeRow] = Seq()
 
   /**
     * int:Id,String:Types,String:content

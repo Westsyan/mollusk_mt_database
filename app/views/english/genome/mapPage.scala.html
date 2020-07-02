@@ -115,7 +115,7 @@
                                 ]
                             },
                             series: [{
-                                data: data,
+
                                 mapData: mapdata,
                                 joinBy: 'hc-key',
                                 name: 'Species',
@@ -142,7 +142,17 @@
                                         }
                                     }
                                 }
-                            }]
+                            }, {
+                                    // Specify points using lat/lon
+                                    type: 'mappoint',
+                                    name: 'Cities',
+                                    data: [ {
+                                        name: 'Birmingham',
+                                        lat: 52.483056,
+                                        lon: -1.893611
+                                    }]
+                            }
+                            ]
                         });
                     }
 

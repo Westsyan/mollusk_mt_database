@@ -16,21 +16,20 @@ class OnStart @Inject()(genomeDao: GenomeDao,
 
   Logger.info("开启成功！")
 
-  val genomeRow = genomeDao.getAllInfo.toAwait
+  TableUtils.genomeRow = genomeDao.getAllInfo.toAwait
 
-  TableUtils.genomeToId = genomeRow.map{x=> x.geneid-> x.id}.toMap
+  TableUtils.genomeToId = TableUtils.genomeRow.map{x=> x.geneid-> x.id}.toMap
 
   val geneRow = geneDao.getAllGene.toAwait
 
   TableUtils.geneidToId = geneRow.map{x=> x.geneid -> x.id}.toMap
 
-  TableUtils.searchSeq = genomeRow.map{x=>
+  TableUtils.searchSeq = TableUtils.genomeRow.map{x=>
     (x.id,Seq(x.geneid,x.organism,x.phylum,x.classes,x.order,x.family,x.genus,x.journal,x.title,x.author,x.position,
       x.collected,x.locality,x.description,x.citation).mkString("\t"))
   }
 
   val js = new File(Utils.path + "/config/world.js")
-  println(js.getAbsolutePath)
   val line = Utils.readLines(js).filter(_.indexOf("type") != -1)
   TableUtils.mmap = line.map { x =>
     val p = x.indexOf("properties")
@@ -68,33 +67,34 @@ class OnStart @Inject()(genomeDao: GenomeDao,
       (y.genus, y.species, Json.obj("text" -> html, "nodes" -> ""))
     }
 
-    val species = x.map { y =>
-      val node = gene.filter(_._1 == y.genus).filter(_._2 == y.species).map(_._3).distinct
-      (y.family, y.genus, Json.obj("text" -> y.species, "tags" -> Array(node.size), "nodes" -> node))
+    val species = x.sortBy(_.species).map { y =>
+     // val node = gene.filter(_._1 == y.genus).filter(_._2 == y.species).map(_._3).distinct
+      val html =  "<a onclick=\"getInfo('" + y.uid + "')\"  style='color: inherit;'>"  + y.species + "</a>"
+      (y.family, y.genus, Json.obj("text" ->html,   "nodes" -> ""))
     }
 
-    val genus = x.map { y =>
+    val genus = x.sortBy(_.genus).map { y =>
       val node = species.filter(_._1 == y.family).filter(_._2 == y.genus).map(_._3).distinct
       (y.order, y.family, Json.obj("text" -> y.genus, "tags" -> Array(node.size), "nodes" -> node))
     }
 
-    val family = x.map { y =>
+    val family = x.sortBy(_.family).map { y =>
       val node = genus.filter(_._1 == y.order).filter(_._2 == y.family).map(_._3).distinct
       (y.classes, y.order, Json.obj("text" -> y.family, "tags" -> Array(node.size), "nodes" -> node))
     }.distinct
 
-    val order = x.map { y =>
+    val order = x.sortBy(_.order).map { y =>
       val node = family.filter(_._1 == y.classes).filter(_._2 == y.order).map(_._3).distinct
       (y.phylum, y.classes, Json.obj("text" -> y.order, "tags" -> Array(node.size), "nodes" -> node))
     }.distinct
 
-    val classes = x.map { y =>
+    val classes = x.sortBy(_.classes).map { y =>
       val node = order.filter(_._1 == y.phylum).filter(_._2 == y.classes).map(_._3).distinct
       (y.phylum, Json.obj("text" -> y.classes, "tags" -> Array(node.size), "nodes" -> node))
     }
 
 
-    val phylumn = x.map(_.phylum).distinct
+    val phylumn = x.map(_.phylum).distinct.sorted
 
     val nodes = phylumn.map { y =>
       val node = classes.filter(_._1 == y).map(_._2).distinct

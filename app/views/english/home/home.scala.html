@@ -1,74 +1,176 @@
-@()(implicit session:Session)
-@english.home.main(""){
-    <div id="content">
-        <h1 class="title">Welcome</h1>
-        <div class="line"></div>
-        <div class="intro">Mollusca is the second-largest phylum of invertebrate animals after the Arthropoda. The
-            members are known as molluscs or mollusks[a] (/ˈmɒləsk/). Around 85,000 extant species of molluscs are
-            recognized. The number of fossil species is estimated between 60,000 and 100,000 additional species. The
-            proportion of undescribed species is very high. Many taxa remain poorly studied</div>
+@()(implicit session: Session)
+    @english.home.main("Mollusk") {
+        <style>
+                .fixed-table-body {
+                    overflow-x: unset;
+                    overflow-y: unset;
+                }
 
-            <!-- Begin Slider -->
-        <div id="slider">
+        </style>
+        <div id="content">
+            <h1 class="title">Welcome</h1>
+            <div class="line"></div>
+            <div class="intro" style="padding-left: 20px;padding-right: 20px;text-indent: 2em;">Mollusca is the second-largest phylum of invertebrate animals after the
+                Arthropoda. The members are known as molluscs or mollusks[a] (/ˈmɒləsk/). Around 85,000 extant species
+                of molluscs are recognized. The number of fossil species is estimated between 60,000 and 100,000
+                additional species. The proportion of undescribed species is very high. Many taxa remain poorly studied.
+                616 species with mitochondrial genome information are provided.</div>
 
-            <div class="flexslider">
-                <ul class="slides">
-                    <li><img src="/mollusk/utils/getGemomeImg?id=1" alt="" height="380px"/></li>
-                    <li><img src="/mollusk/utils/getGemomeImg?id=2" alt="" height="380px"/></li>
-                    <li><img src="/mollusk/utils/getGemomeImg?id=3" alt="" height="380px"/></li>
-                    <li><img src="/mollusk/utils/getGemomeImg?id=4" alt="" height="380px"/></li>
-                    <li><img src="/mollusk/utils/getGemomeImg?id=6" alt="" height="380px"/></li>
-                </ul>
+
+                <!-- Begin Slider -->
+            <div id="slider">
+
+                <div class="flexslider">
+                    <ul class="slides">
+                        <li><img class="img-home" src="/assets/images/home/IMG_4482.JPG" alt="" height="380px"/></li>
+                        <li><img class="img-home" src="/assets/images/home/IMG_4485.JPG" alt="" height="380px"/></li>
+                        <li><img class="img-home" src="/assets/images/home/IMG_4491.JPG" alt="" height="380px"/></li>
+                        <li><img class="img-home" src="/assets/images/home/IMG_4496.JPG" alt="" height="380px"/></li>
+                        <li><img class="img-home" src="/assets/images/home/IMG_4512.JPG" alt="" height="380px"/></li>
+                        <li><img class="img-home" src="/assets/images/home/IMG_4519.JPG" alt="" height="380px"/></li>
+                        <li><img class="img-home" src="/assets/images/home/IMG_4526.JPG" alt="" height="380px"/></li>
+
+                    </ul>
+                </div>
+
+            </div>
+
+            <div>
+                <h2>Statistics</h2>
+                <div class="line"></div>
+
+                <div style="width: 25%;
+                    margin-top: 35px;margin-left: 20px;
+                    float: left">
+
+                    <table class="table" id="table">
+                        <thead>
+                            <tr>
+                                <th data-field="classes">Classes</th>
+                                <th data-field="species">Species</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                </div>
+                <div id="charts" style="width: 70%;
+                    height: 400px;
+                    margin-left: 20px;
+                    float: left"></div>
+
+            </div>
+
+
+            <div style="margin-top: 425px">
+
+                <h2>Tools</h2>
+            </div>
+            <div class="line"></div>
+
+
+
+
+
+
+            <div style="margin-left: 20px">
+
+                <div >
+                    <h3><a href="/US/mollusk/tools/blastBefore" target="_blank">
+                        <img src="/assets/images/fenxi.png" style="width: 30px" />Blast</a>
+                        <span> : an algorithm for comparing primary biological sequence information</span>
+                    </h3>
+
+                </div>
+                <div>
+                    <h3><a href="/US/mollusk/tools/genewiseefore" target="_blank">
+                        <img src="/assets/images/fenxi.png" style="width: 30px" />Genewise</a>
+                        <span >
+                            ：compares a protein sequence to a genomic DNA sequence </span></h3>
+                </div>
+
+
+                <div>
+                    <h3><a href="/US/mollusk/tools/muscleBefore" target="_blank">
+                        <img src="/assets/images/fenxi.png" style="width: 30px" />Muscle</a>
+                        <span>
+                            ：multiple alignment programs with higher accuracy and speed</span></h3>
+                </div>
+
+
+                <div>
+                    <h3><a href="/US/mollusk/tools/lastzBefore" target="_blank">
+                        <img src="/assets/images/fenxi.png" style="width: 30px" />Lastz</a>
+                        <span>
+                              ：a drop-in replacement for BLASTZ </span></h3>
+                </div>
+
+            </div>
+
+            <h2 style="margin-top: 20px"> Global Visitors</h2>
+            <div class="line"></div>
+
+
+            <div style="width: 600px;
+                margin-left: 20px;">
+                <script type="text/javascript" src="//rf.revolvermaps.com/0/0/7.js?i=5fuhuf537c2&amp;m=0&amp;c=ff0000&amp;cr1=ff0000&amp;br=10&amp;sx=0" async="async"></script>
             </div>
 
         </div>
 
-        <h2>Tools</h2>
 
-        <p>By collating all the mitochondrial genome information of molluscs and providing the bioinformatics analysis
-            and visualization tools such as the collinearity analysis of the genome browser and the Blast function
-            annotation, it provides a solid foundation for the scientific research on the mitochondrial gene function
-            comparison of genomes and other relevant studies.</p>
-
-
-
-        <div class="one-half">
-            <h3><a href="@routes.ToolsController.blastBefore()" target="_blank">
-                <img src="/assets/images/fenxi.png" style="width: 30px" />Blast</a></h3>
-            <p style="text-align: justify"> 	BLAST (basic local alignment search tool) is an algorithm for comparing primary biological sequence
-                information, such as the amino-acid sequences of proteins or the nucleotides of DNA and/or RNA sequences.</p>
-        </div>
-        <div class="one-half last">
-            <h3><a href="@routes.ToolsController.geneWiseBeforeUS()" target="_blank">
-                <img src="/assets/images/fenxi.png" style="width: 30px" />Genewise</a></h3>
-            <p style="text-align: justify">GeneWise compares a protein sequence to a genomic DNA sequence, allowing for introns and frameshifting errors. </p>
-        </div>
-
-
-        <div class="clear"></div>
-        <div class="one-half ">
-            <h3><a href="@routes.ToolsController.muscleBeforeUS()" target="_blank">
-                <img src="/assets/images/fenxi.png" style="width: 30px" />Muscle</a></h3>
-            <p style="text-align: justify">MUSCLE is one of the best-performing multiple alignment programs according to published benchmark tests,
-                with accuracy and speed that are consistently better than CLUSTALW. MUSCLE can align hundreds of
-                sequences in seconds. Most users learn everything they need to know about MUSCLE in a few minutes—only
-                a handful of command-line options are needed to perform common alignment tasks.</p>
-        </div>
-
-
-        <div class="one-half last">
-            <h3><a href="@routes.ToolsController.lastzBeforeUS()" target="_blank">
-                <img src="/assets/images/fenxi.png" style="width: 30px" />Lastz</a></h3>
-            <p style="text-align: justify">This document describes installation and usage of the LASTZ sequence alignment program. LASTZ is a drop-in
-                replacement for BLASTZ, and is backward compatible with BLASTZ's command-line syntax. That is, it supports
-                all of BLASTZ's options but also has additional ones, and may produce slightly different alignment results.  </p>
-        </div>
-
+            <!-- End Content -->
         <div class="clear"></div>
 
+        <script src="@routes.Assets.versioned("Highcharts-6.0.1/code/highcharts.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("Highcharts-6.0.1/code/highcharts-more.js")" type="text/javascript"></script>
+    <script>
 
-    </div>
-        <!-- End Content -->
-    <div class="clear"></div>
 
-}
+                $(function () {
+                    $.post("@routes.HomeController.getClassesSpecies()", (data) => {
+                        $("#table").bootstrapTable({data: data.table});
+                        pie(data.pie);
+                    })
+
+                })
+
+                function pie(data) {
+                    new Highcharts.chart('charts', {
+                        chart: {
+                            plotBackgroundColor: null,
+                            plotBorderWidth: null,
+                            plotShadow: false,
+                            type: 'pie'
+                        },
+                        title: {
+                            text: 'Species Statistics'
+                        },
+                        tooltip: {
+                            pointFormat: '{series.name}: <b>{point.y}</b>'
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                dataLabels: {
+                                    enabled: true,
+                                    format: '<b>{point.name}</b>: {point.y} ',
+                                    style: {
+                                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                    }
+                                }
+                            }
+                        },
+                        series: [{
+                            name: 'Species',
+                            colorByPoint: true,
+                            data: data
+                        }]
+                    });
+                }
+
+        </script>
+    }

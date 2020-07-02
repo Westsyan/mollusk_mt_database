@@ -298,7 +298,8 @@ object Utils {
   }
 
   val windowsPath = "I:\\mollusk_mt_database"
-  val linuxPath = "/mnt/sdb/xwq/projects/mollusk_mt_database"
+  val linuxPath = "/var/mollusk_mt_database"
+ // val linuxPath = "/mnt/sdb/xwq/projects/mollusk_mt_database"
   val path : String= {
     if (isWindow) windowsPath else linuxPath
   }

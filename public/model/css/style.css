@@ -711,7 +711,7 @@ pre {
 .flexslider .slides > li {
 	display: none;
 }
-.flexslider .slides img {
+.flexslider .slides .img-home {
 	width: 700px;
 	height: 380px;
 	display: block;

@@ -315,21 +315,17 @@
 	};
 
 	Tree.prototype.clickHandler = function (event) {
-
 		if (!this.options.enableLinks) event.preventDefault();
-
 		var target = $(event.target);
 		var node = this.findNode(target);
 		if (!node || node.state.disabled) return;
-		
 		var classList = target.attr('class') ? target.attr('class').split(' ') : [];
-		if ((classList.indexOf('expand-icon') !== -1)) {
-
+		//在classList中选择li的class:node-selected,加号的class:expand-icon.这样可以控制点击加号展开还是点击行展开
+		if ((classList.indexOf('node-selected') === -1)) {
 			this.toggleExpandedState(node, _default.options);
 			this.render();
 		}
 		else if ((classList.indexOf('check-icon') !== -1)) {
-			
 			this.toggleCheckedState(node, _default.options);
 			this.render();
 		}

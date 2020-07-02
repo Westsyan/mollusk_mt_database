@@ -1,12 +1,12 @@
 <!-- Begin Sidebar -->
 <div id="sidebar" style="height: 100%">
-    <div id="logo"><a href="index.html"><img src="/assets/model/images/logo.png" alt="Mollusk" /></a></div>
+    <div id="logo"><a href="#"><img src="/assets/model/images/logo.png" alt="Mollusk" /></a></div>
 
         <!-- Begin Menu -->
     <div id="menu" class="menu-v">
         <ul>
             <li><a href="@routes.HomeController.index()" id="home">Home</a></li>
-            <li><a href="@routes.GenomeController.browserPage()" id="genome">Genome</a>
+            <li><a href="@routes.GenomeController.browserPage("")" id="genome">Genome</a>
 @*                <ul>
                     <li><a href="@routes.GenomeController.browserPage()">Browser</a></li>
                     <li><a href="@routes.LocationController.mapPage()">Geographical distribution</a></li>
@@ -20,8 +20,19 @@
                     <li><a href="@routes.ToolsController.lastzBeforeUS()">Lastz</a></li>
                 </ul>
             </li>
-            <li><a href="@routes.TreeController.tree()" id="tree">Taxonomy Tree</a></li>
+            @**@
+@*            <li><a href="#" id="tree">Tree</a>
+                <ul>
+                    <li><a href="@routes.TreeController.tree()">Taxonomy Tree</a></li>
+                    <li><a href="@routes.TreeController.treeOfLife()">Phylogenetic Tree</a></li>
+                </ul>
+            </li>*@
+            <li><a href="@routes.TreeController.tree()" id="taxTree">Taxonomy Tree</a></li>
+            <li><a href="@routes.TreeController.treeOfLife()" id="phyTree">Phylogenetic Tree</a></li>
+            <li><a href="@routes.CompareController.comparePage()" id="compare">Compare</a></li>
+
             <li><a href="@routes.LiteratureController.literaturePage()" id="literature">Literature</a></li>
+            <li><a href="@routes.LiteratureController.citationPage()" id="citation">Citation</a></li>
             <li><a href="@routes.DownloadController.downloadBeforeUS()" id="download">Download</a></li>
             <li><a href="@routes.HomeController.aboutPage()" id="about">About</a></li>
         </ul>
@@ -31,7 +42,22 @@
         <div class="search">
             <h3>Search</h3>
             <form class="searchform" method="get"  action="/US/mollusk/search/searchBefore">
-                <input type="text" id="s" name="input" placeholder="Keyword" src="height:30px"/>
+                <input type="text" id="searchInfo" name="input" placeholder="Keyword" src="height:30px"/>
+                <button style="float: left;
+                    background-color: transparent;
+                    border: transparent;
+                    float: right;
+                    margin-top: -31px;
+                    margin-right: 10px;" type="submit">
+                    <i class="fa fa-search" style="font-size: 15px;
+                        margin-top: 6px;
+                        margin-right: -7px;
+                        color: transparent;"></i>
+                </button>
+                <span class="help-block" style="color: white">
+                                e.g.,&nbsp;<a href="#" onclick="showSearchExample()" class="resLink"
+                                style="color: white"><em id="egSearch">
+                                example</em></a></span>
             </form>
             <div class="clear"></div>
         </div>
@@ -42,8 +68,15 @@
          const href = window.location.href;
          const array = href.split("/");
          const code = array[array.length - 2];
-         $("#" + code).addClass('active');
+         if(array.length < 5){
+             $("#home").addClass('active');
+         }else{
+             $("#" + code).addClass('active');
+         }
 
+         function showSearchExample() {
+             $("#searchInfo").val("Aplacophora");
+         }
 
 
     </script>

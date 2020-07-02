@@ -1,0 +1,644 @@
+@()(implicit session: Session)
+    @english.home.main("Compare") {
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("phylotree.js-master/phylotree.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("mscroll/css/lz_index.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("select2-4.0.3/dist/css/select2.min.css")">
+
+        <script src="@routes.Assets.versioned("d3/d3.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("phylotree.js-master/phylotree.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("javascripts/underscore.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("select2-4.0.3/dist/js/select2.full.min.js")" type="text/javascript"></script>
+
+        <style>
+
+                .fa-rotate-135 {
+                    -webkit-transform: rotate(135deg);
+                    -moz-transform: rotate(135deg);
+                    -ms-transform: rotate(135deg);
+                    -o-transform: rotate(135deg);
+                    transform: rotate(135deg);
+                }
+
+                .fa-rotate-45 {
+                    -webkit-transform: rotate(45deg);
+                    -moz-transform: rotate(45deg);
+                    -ms-transform: rotate(45deg);
+                    -o-transform: rotate(45deg);
+                    transform: rotate(45deg);
+                }
+
+                .myGroup {
+                    margin-top: 15px;
+                    margin-left: 15px;
+                }
+
+                #error1 {
+                    color: red;
+                }
+
+                #error2 {
+                    color: red;
+                }
+
+        </style>
+
+
+        <div id="content" class="container" >
+            <h1 class="title">Compare</h1>
+            <div class="line"></div>
+
+            <div class="tab_container" style="margin-bottom: 30px;
+                padding-top: 30px">
+
+                <form class="registration-form form-horizontal" id="form" accept-charset="UTF-8">
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Organism One:</label>
+                        <div class="col-sm-4">
+                            <select class="checkbox form-control" multiple id="organism1" name="organism1">
+                            </select>
+                            <span id="error1"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Organism Two:</label>
+                        <div class="col-sm-4">
+                            <select class="checkbox form-control" multiple id="organism2" name="organism2">
+                            </select>
+                            <span id="error2"></span>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="actions col-sm-offset-3 col-sm-2">
+                            <a href="#" class="button blue" onclick="compare()">Compare</a>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+
+            <div id="result" style="display: none" >
+                <div class="box" >
+                    <h4 class="area">
+                        <div class="area_img">
+                            <i class="fa fa-minus"></i>
+                        </div>
+                        <span class="area_title" data-id="1">Compare result</span>
+
+                    </h4>
+                    <div class="picture_list">
+                        <pre id="out" style="background-color: white"></pre>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <h4 class="area">
+                        <div class="area_img">
+                            <i class="fa fa-minus"></i>
+                        </div>
+                        <span class="area_title" data-id="1">Locality （GPS）</span>
+
+                    </h4>
+                    <div class="picture_list">
+                        <div id="locality" style="width: 900px"></div>
+                    </div>
+                </div>
+
+                <div class="box" >
+                    <h4 class="area">
+                        <div class="area_img">
+                            <i class="fa fa-minus"></i>
+                        </div>
+                        <span class="area_title" data-id="1">Phylogenetic Tree</span>
+                    </h4>
+
+
+                    <div class="picture_list">
+                        <div id="charts" class="well">No results！</div>
+                        <div id="treeContent" >
+                            <h5 style="display: none">Images:
+                                <form action="" method="post" onsubmit="mySubmit()" style="display: inline">
+                                    <input type="hidden" name="svgHtml" id="svgHtml">
+                                        &nbsp;<button class="btn btn-primary" type="submit"><i class="fa fa-download"></i>&nbsp;下载SVG文件</button>
+                                </form>
+                            </h5>
+
+                            <div>
+                                <div style="margin-bottom: 20px;">
+                                    <div class="btn-group myGroup">
+                                        <button type="button" class="btn btn-default btn-sm" data-direction="vertical" data-amount="1" title="Expand vertical spacing">
+                                            <i class="fa fa-arrows-v"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-default btn-sm" data-direction="vertical" data-amount="-1" title="Compress vertical spacing">
+                                            <i class="fa  fa-compress fa-rotate-135"></i>
+                                        </button>
+                                        <button id="leftRight" type="button" class="btn btn-default btn-sm" data-direction="horizontal" data-amount="1" title="Expand horizonal spacing">
+                                            <i class="fa fa-arrows-h"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-default btn-sm" data-direction="horizontal" data-amount="-1" title="Compress horizonal spacing">
+                                            <i class="fa fa-compress fa-rotate-45"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-default btn-sm" id="sort_ascending" title="Sort deepest clades to the bototm">
+                                            <i class="fa fa-sort-amount-asc"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-default btn-sm" id="sort_descending" title="Sort deepsest clades to the top">
+                                            <i class="fa fa-sort-amount-desc"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-default btn-sm" id="sort_original" title="Restore original order">
+                                            <i class="fa fa-sort"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-default btn-sm" title="Reset tree" onclick="refreshTree()">
+                                            <i class="fa fa-refresh"></i>
+                                        </button>
+
+                                    </div>
+                                    <div class="btn-group myGroup" data-toggle="buttons">
+                                        <label class="btn btn-default btn-sm active" id="linear">
+                                            <input name="options" class="phylotree-layout-mode" data-mode="linear" autocomplete="off" checked="" title="Layout left-to-right" type="radio">
+                                            Linear
+                                        </label>
+                                        <label class="btn btn-default btn-sm">
+                                            <input name="options" class="phylotree-layout-mode" data-mode="radial" autocomplete="off" title="Layout radially" type="radio">
+                                            Radial
+                                        </label>
+                                    </div>
+                                    <div class="btn-group myGroup" data-toggle="buttons">
+                                        <label class="btn btn-default btn-sm" >
+                                            <input class="phylotree-align-toggler" data-align="left" name="options-align" autocomplete="off" title="Align tips labels to branches" type="radio">
+                                            <i class="fa fa-align-left"></i>
+                                        </label>
+                                        <label class="btn btn-default active btn-sm" id="defaultAlign">
+                                            <input class="phylotree-align-toggler" data-align="right" name="options-align" autocomplete="off" checked="checked" title="Align tips labels to the edge of the plot" type="radio">
+                                            <i class="fa fa-align-right"></i>
+
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <svg id="tree_display" style="width: 900px" xmlns='http://www.w3.org/2000/svg' xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <script src="@routes.Assets.versioned("mscroll/js/mscroll.js")" type="text/javascript"></script>
+
+        <script src="@routes.Assets.versioned("Highmaps-6.1.0/proj4.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("Highmaps-6.1.0/highmaps.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("Highmaps-6.1.0/world-highres3.js")" type="text/javascript"></script>
+
+
+        <script>
+                let tree;
+                let treeData;
+                let x;
+                let y;
+                let csvMap;
+                let orderMap;
+
+
+                $(function () {
+                    getOrganism();
+                });
+
+
+                function compare() {
+                    let loc1Name = String($("#organism1").val());
+                    let loc2Name = String($("#organism2").val());
+                    $("#error1").empty();
+                    $("#error2").empty();
+                    if (loc1Name === "null") {
+                        $("#error1").text("No empty!")
+                    } else if (loc2Name === "null") {
+                        $("#error2").text("No empty!")
+                    } else if (loc1Name === loc2Name) {
+                        $("#error2").text("No repeat!")
+                    } else {
+
+                        var element = "<div><span id='info'>Compare...</span>&nbsp;<img class='runningImage' src='/assets/images/running2.gif' style='width: 30px;height: 20px;'></div>"
+                        var index = layer.alert(element, {
+                            skin: 'layui-layer-lan'
+                            , closeBtn: 0,
+                            title: "Info",
+                            btn: []
+                        });
+                        $.ajax({
+                            url: "@routes.CompareController.getResult()",
+                            type: "post",
+                            data: $("#form").serialize(),
+                            success: function (data) {
+                                if (data.valid == "false") {
+
+                                } else {
+                                    $("#out").empty();
+                                    $("#out").html(data.out);
+
+
+                                    let locName = [loc1Name, loc2Name];
+                                    drawCompare(data.loc1, data.loc2);
+
+                                    let reg = new RegExp(" ", "g");
+                                    let locName1 = loc1Name.replace(reg, "_");
+                                    let locName2 = loc2Name.replace(reg, "_");
+
+                                    csvMap = {[locName1]: "1", [locName2]: "2"}
+                                    orderMap = [locName1, locName2]
+                                    mySearch(locName1, locName2);
+
+
+                                    $("#result").show();
+                                }
+                                layer.close(index);
+                            }
+                        })
+                    }
+
+                }
+
+                $("select").change(function () {
+                    $("#error1").empty();
+                    $("#error2").empty();
+                })
+
+                function getOrganism() {
+                    $.post("@routes.CompareController.getLocationSpecies()", (data) => {
+                        $("#organism1").select2({
+                            data: data,
+                            maximumSelectionLength: 1,
+                            allowClear: true
+                        });
+                        $("#organism2").select2({
+                            data: data,
+                            maximumSelectionLength: 1,
+                            allowClear: true
+                        });
+                    })
+                }
+
+                function drawCompare(loc1, loc2) {
+                    let loc1Name = String($("#organism1").val());
+                    let loc2Name = String($("#organism2").val());
+                    let s1 = [];
+                    let los1 = loc1.split(";");
+                    $.each(los1, (i, v) => {
+                        let l = v.split(",")
+                        s1.push({
+                            lon: parseFloat(l[0]),
+                            lat: parseFloat(l[1])
+                        })
+                    })
+                    let s2 = [];
+
+                    let los2 = loc2.split(";")
+                    $.each(los2, (i, v) => {
+                        let l = v.split(",")
+                        s2.push({
+                            lon: parseFloat(l[0]),
+                            lat: parseFloat(l[1])
+                        })
+                    })
+
+
+                    let chart = Highcharts.mapChart('locality', {
+                        title: {
+                            text: loc1Name + " compare to " + loc2Name
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        legend: {
+                            align: 'left',
+                            layout: 'vertical',
+                            floating: true
+                        },
+                        mapNavigation: {
+                            enabled: true
+                        },
+                        tooltip: {
+                            enabled: false,
+                            hideDelay: 0,
+                            formatter: function () {
+                                return "" + (
+                                        this.point.lat ?
+                                                '<br>Lon: ' + this.point.lon + ' Lat: ' + this.point.lat : ''
+                                );
+                            }
+                        },
+                        chart: {
+                            events: {
+                                load: function () {
+                                    this.myTooltip = new Highcharts.Tooltip(this, this.options.tooltip);
+                                }
+                            }
+                        },
+                        plotOptions: {
+                            series: {
+                                stickyTracking: false,
+                                marker: {
+                                    fillColor: '#FFFFFF',
+                                    lineWidth: 2,
+                                },
+                                events: {
+                                    click: function (evt) {
+                                        this.chart.myTooltip.options.enabled = true;
+                                        this.chart.myTooltip.refresh(evt.point, evt);
+                                    },
+                                    mouseOut: function () {
+                                        this.chart.myTooltip.hide();
+                                        this.chart.myTooltip.options.enabled = false;
+                                    }
+                                }
+                            }
+                        },
+                        series: [{
+                            // Use the gb-all map with no data as a basemap
+                            mapData: Highcharts.maps['custom/world-highres3'],
+                            name: 'Basemap',
+                            borderColor: '#707070',
+                            showInLegend: false
+                        }, {
+                            name: 'Separators',
+                            type: 'mapline',
+                            data: Highcharts.geojson(Highcharts.maps['custom/world-highres3'], 'mapline'),
+                            color: '#707070',
+                            showInLegend: false,
+                            enableMouseTracking: false
+                        }, {
+                            // Specify cities using lat/lon
+                            type: 'mappoint',
+                            name: loc1Name,
+                            marker: {
+                                radius: 4,
+                                lineColor: "#FDB462"
+                            },
+                            data: s1,
+                            turboThreshold: 0 //js创建超过1000个对象后，需要加此参数才能描点
+                        }, {
+                            // Specify cities using lat/lon
+                            type: 'mappoint',
+                            name: loc2Name,
+                            marker: {
+                                radius: 4,
+                                lineColor: "#33a02c"
+                            },
+                            data: s2,
+                            turboThreshold: 0 //js创建超过1000个对象后，需要加此参数才能描点
+                        }]
+                    });
+                }
+
+                function sort_nodes(asc) {
+                    tree.traverse_and_compute(function (n) {
+                        var d = 1;
+                        if (n.children && n.children.length) {
+                            d += d3.max(n.children, function (d) {
+                                return d["count_depth"];
+                            });
+                        }
+                        n["count_depth"] = d;
+                    });
+                    tree.resort_children(function (a, b) {
+                        return (a["count_depth"] - b["count_depth"]) * (asc ? 1 : -1);
+                    });
+                }
+
+                let nums = [];
+                for (let i = 0; i < 3; i++) {
+                    nums.push(i);
+                }
+
+                let color_scale = d3.scale.ordinal().range(["#999", "#FDB462", "#33a02c"])
+                        .domain(nums);
+
+                function legend_name_to_color(name) {
+                    return color_scale(name);
+                }
+
+                function node_colorizer(element, data) {
+                    try {
+                        var count_class = 0;
+
+                        selection_set.forEach(function (d, i) {
+                            if (data[d]) {
+                                count_class++;
+                                element.style("fill", color_scheme(i), i === current_selection_id ? "important" : null);
+                            }
+                        });
+
+                        if (count_class > 1) {
+
+                        } else {
+                            if (count_class === 0) {
+                                element.style("fill", null);
+                            }
+                        }
+                    } catch (e) {
+
+                    }
+
+                }
+
+                function refreshTree(loc1, loc2) {//处理树状图
+                    var example_tree = treeData;
+
+                    tree = d3.layout.phylotree()
+                            .options({
+                                zoom: true
+                            })
+                            .svg(d3.select("#tree_display"))
+                            .radial(false);//切换树图和圆图
+
+/*                    d3.select("#tree_display")
+                            .append("text")
+                            .text("Organism")
+                            .attr("x", 740)
+                            .attr("y", 100)*/
+
+/*                    d3.select("#legend")
+                            .append("text")
+                            .text("Organism")
+                            .attr("x", 10)
+                            .attr("y", 10)
+
+                    d3.select("#legend").selectAll("g1")
+                            .data(nums.slice(1, 3))
+                            .enter()
+                            .append('g')
+                            .append("rect")
+                            .attr("x", (d, i) => 10 + (i % 6) * 300)
+                            .attr("y", (d, i) => 30 + parseInt(i / 6) * 20)
+                            .attr("width", 30)
+                            .attr("height", 10)
+                            .attr("fill", d => legend_name_to_color(d));
+
+                    d3.select("#legend").selectAll("t1")
+                            .data(nums.slice(1, 3))
+                            .enter()
+                            .append("text")
+                            .text(d => d)
+                            .attr("x", (d, i) => 50 + (i % 6) * 300)
+                            .attr("y", (d, i) => 40 + parseInt(i / 6) * 20)
+                            .text(d => orderMap[d-1])
+                            .attr("fill", d => legend_name_to_color(d))
+                            .attr("font-size", "12px");*/
+
+/*                    //图例
+                    d3.select("#tree_display").selectAll("g1")
+                            .data(nums.slice(1, 3))
+                            .enter()
+                            .append('g')
+                            .append("rect")
+                            .attr("x", 740)
+                            .attr("y", (d, i) => 120 + i * 20)
+                            .attr("width", 30)
+                            .attr("height", 10)
+                            .attr("fill", d => legend_name_to_color(d));
+
+                    d3.select("#tree_display").selectAll("t1")
+                            .data(nums.slice(1, 3))
+                            .enter()
+                            .append("text")
+                            // .text(d => d)
+                            .attr("x", 780)
+                            .attr("y", (d, i) => 130 + i * 20)
+                            .text(d => orderMap[d - 1])
+                            .attr("fill", d => legend_name_to_color(d))
+                            .attr("font-size", "12px");*/
+
+                    tree.style_nodes(function (element, data) {
+                        node_colorizer(element, data);
+                        let m = (tree.branch_name()(data));
+                        let color = legend_name_to_color(csvMap[m]);
+
+                        element.style("fill", color);
+
+                    });
+
+                    tree.style_edges(function (element, data) {
+                        let m = (tree.branch_name()(data.target));
+                        let color = legend_name_to_color(csvMap[m]);
+                        element.style("stroke", color);
+                    });
+
+
+                    tree.align_tips(true);//这一步将初始图变为带虚线图
+                    tree.spacing_x(14, true);//高度
+                    tree.spacing_y(13, true);//宽度
+
+                    //tree.options ({'draw-size-bubbles' : true}, false);
+
+                    $("label").removeClass("active");
+                    $("#defaultAlign,#linear").addClass("active");
+                    tree(example_tree)
+                            .layout();
+
+                    $("#sort_original").on("click", function (e) {
+                        tree.resort_children(function (a, b) {
+                            return a["original_child_order"] - b["original_child_order"];
+                        });
+                    });
+
+                    $("#sort_ascending").on("click", function (e) {
+                        sort_nodes(true);
+                    });
+
+                    $("#sort_descending").on("click", function (e) {
+                        sort_nodes(false);
+                    });
+
+                    $(".phylotree-layout-mode").on("change", function (e) {
+                        if ($(this).is(':checked')) {
+                            if (tree.radial() != ($(this).data("mode") == "radial")) {
+                                //  tree.spacing_x(3, true);//高度
+                                tree.radial(!tree.radial()).placenodes().update();
+                            }
+                        }
+                    });
+
+                    $("[data-direction]").on("click", function (e) {
+                        var which_function = $(this).data("direction") == 'vertical' ? tree.spacing_x : tree.spacing_y;
+                        which_function(Number(which_function()) + (+$(this).data("amount"))).update();
+                    });
+
+                    $(".phylotree-align-toggler").on("change", function (e) {
+                        if ($(this).is(':checked')) {
+                            if (tree.align_tips($(this).data("align") == "right")) {
+                                tree.placenodes().update();//虚线
+                            }
+                        }
+                    });
+
+                    let nodes = tree.get_nodes()
+                    $.each(nodes, function (i, node) {
+                        if (node.name == loc1 || node.name == loc2) {
+                            check = loc1 + loc2
+                            tree.modify_selection(tree.path_to_root(node))
+                        }
+                    })
+
+                }
+
+                function mySubmit() {
+                    var html = $("svg:first").prop("outerHTML");
+                    $("#svgHtml").val(html);
+                    return true
+                }
+
+                function openInfo(obj) {
+                    var id = obj.id;
+                    $.ajax({
+                        url: "/fern/rna/checkName?name=" + id,
+                        type: "get",
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.valid == "false") {
+                                error("There is no RNA information");
+                            } else {
+                                //  window.location.href=("/fern/rna/moreInfoByName?name=" + id);
+                                //   id = "Pronephrium_simplex";// 这是测试代码
+                                window.open("/fern/rna/moreInfoByName?name=" + id);
+                            }
+                        }
+                    });
+                }
+
+                function mySearch(loc1, loc2) {
+                    $("#search").attr("disabled", true).html("作图中...");
+                    $("#treeContent").hide();
+                    $("#charts").html("<img src='/assets/images/loading.gif'/>").show();
+                    $.ajax({
+                        url: "@routes.TreeController.plot()",
+                        type: "get",
+                        data: $("#form").serialize(),
+                        success: function (data) {
+                            if (data.valid == "false") {
+                                swal("错误", data.message, "error");
+                                $("#treeContent").hide();
+                                $("#charts").html("没有图片结果生成！").show()
+                            } else {
+                                $("label").removeClass("active");
+                                $("#defaultAlign,#linear").addClass("active");
+                                $("#treeOut").html(data.tree);
+                                treeData = data.tree;
+                                refreshTree(loc1, loc2);
+
+                                $("#treeContent").show();
+                                $("#charts").hide()
+                            }
+
+                            $("#search").attr("disabled", false).html("开始作图").blur()
+                        }
+                    });
+                }
+
+
+        </script>
+
+    }

@@ -12,6 +12,7 @@ object md5 {
   }
 
 
+
   def main(args: Array[String]): Unit = {
     println(Utils.date.toString)
   }

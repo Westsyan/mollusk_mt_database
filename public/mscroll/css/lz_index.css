@@ -56,9 +56,8 @@
 
 .picture_list>div {
 	/*width: 50%;*/
-	float: left;
 	padding: 0px 3px;
-    margin: 0 -3px;
+    margin: 0 auto;
 	margin-bottom: 6px;
 }
 

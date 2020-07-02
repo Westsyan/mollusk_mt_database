@@ -1,85 +1,107 @@
-
 # Routes
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET         /                                                controllers.HomeController.index
+GET         /                                                  controllers.HomeController.index
 
-GET         /US/mollusk/home/home                            controllers.HomeController.homeUS
-GET         /CN/mollusk/home/home                            controllers.HomeController.homeCN
-GET         /US/mollusk/about/aboutPage                      controllers.HomeController.aboutPage
+GET         /US/mollusk/home/home                              controllers.HomeController.homeUS
+GET         /CN/mollusk/home/home                              controllers.HomeController.homeCN
+POST        /mollusk/getClassesSpecies                         controllers.HomeController.getClassesSpecies
+GET         /US/mollusk/about/aboutPage                        controllers.HomeController.aboutPage
 
-GET         /US/mollusk/genome/browserPage                   controllers.GenomeController.browserPage
-POST        /US/mollusk/genome/getGenomeInfo                 controllers.GenomeController.getGenomeInfo
-GET         /US/mollusk/genome/genomeInfoPage                controllers.GenomeController.genomeInfoPage(id:Int)
-POST        /US/mollusk/genome/getAllGeneById                controllers.GenomeController.getAllGeneById(id:Int)
-POST        /US/mollusk/genome/getWorldPostion               controllers.GenomeController.getWorldPostion(id:Int)
-GET         /US/mollusk/genome/genePage                      controllers.GenomeController.genePage(id:Int)
-GET         /US/mollusk/genome/getSeqs                       controllers.GenomeController.getSeqs(gb:String,range:String)
-GET         /US/mollusk/genome/mapPage                       controllers.LocationController.mapPage
-POST        /US/mollusk/genome/getWorldData                  controllers.LocationController.getWorldData
-POST        /US/mollusk/genome/getInfoByLocation             controllers.LocationController.getInfoByLocation(location:String)
-GET         /US/mollusk/genome/genomeInfoPageByGeneid        controllers.GenomeController.genomeInfoPageByGeneid(geneid:String)
-GET         /US/mollusk/genome/geneInfoPageByGeneid          controllers.GenomeController.geneInfoPageByGeneid(geneid:String)
-
-
-
-GET         /mollusk/insert/insertGemome                     controllers.InsertController.insertGemome
-GET         /mollusk/insert/insertGeneSum                    controllers.InsertController.insertGeneSum
-GET         /mollusk/insert/insertGene                       controllers.InsertController.insertGene
-
-
-GET         /US/mollusk/tools/tool                           controllers.ToolsController.tool
-GET         /US/mollusk/tools/blastBefore                    controllers.ToolsController.blastBefore
-GET         /US/mollusk/tools/seqFetchBefore                 controllers.ToolsController.seqFetchBefore
-GET         /US/mollusk/tools/genewiseefore                  controllers.ToolsController.geneWiseBeforeUS
-GET         /US/mollusk/tools/lastzBefore                    controllers.ToolsController.lastzBeforeUS
-GET         /US/mollusk/tools/muscleBefore                   controllers.ToolsController.muscleBeforeUS
-GET         /US/mollusk/tools/primerBefore                   controllers.ToolsController.primerBeforeUS
-GET         /US/mollusk/tools/syntenyBefore                  controllers.ToolsController.syntenyBeforeUS
-
-POST        /mollusk/tools/blastRun                          controllers.ToolsController.blastRun
-GET         /mollusk/tools/blastResultBefore                 controllers.ToolsController.blastResultBefore(path:String,types:String,db:String)
-POST        /mollusk/tools/blastResult                       controllers.ToolsController.blastResult(path:String,types:String)
-POST        /PODB/tools/seqRegion                            controllers.ToolsController.seqRegion
-POST        /mollusk/tools/genewise                          controllers.ToolsController.genewise
-POST        /PODB/tools/primer                               controllers.ToolsController.primer
-POST        /mollusk/tools/muscle                            controllers.ToolsController.muscle
-POST        /mollusk/tools/downloadTree                      controllers.ToolsController.downloadTree
-POST        /mollusk/tools/lastz                             controllers.ToolsController.lastz
-
-GET         /US/mollusk/download/downloadBefore              controllers.DownloadController.downloadBeforeUS
-GET         /mollusk/download/download                       controllers.DownloadController.download(file:String)
-GET         /mollusk/download/getDownloadJson                controllers.DownloadController.getDownloadJson
-GET         /mollusk/download/downloadSelect                 controllers.DownloadController.downloadSelect(id:String,fa:String)
-
-GET         /mollusk/utils/getImageByPhotoId                 controllers.UtilsController.getImageByPhotoId(name:String)
-POST        /mollusk/utils/getLastzTarfetExample             controllers.UtilsController.getLastzTarfetExample
-GET         /mollusk/utils/downloadLastzTarfetExample        controllers.UtilsController.downloadLastzTarfetExample
-POST        /mollusk/utils/getLastzQueryExample              controllers.UtilsController.getLastzQueryExample
-GET         /mollusk/utils/downloadLastzQueryExample         controllers.UtilsController.downloadLastzQueryExample
-GET         /mollusk/utils/getGemomeImg                      controllers.UtilsController.getGemomeImg(id:Int)
+GET         /US/mollusk/genome/browserPage                     controllers.GenomeController.browserPage(classes:String)
+POST        /US/mollusk/genome/getGenomeInfo                   controllers.GenomeController.getGenomeInfo(classes:String)
+GET         /US/mollusk/genome/genomeInfoPage                  controllers.GenomeController.genomeInfoPage(id:Int)
+POST        /US/mollusk/genome/getAllGeneById                  controllers.GenomeController.getAllGeneById(id:Int)
+POST        /US/mollusk/genome/getWorldPostion                 controllers.GenomeController.getWorldPostion(id:Int)
+GET         /US/mollusk/genome/genePage                        controllers.GenomeController.genePage(id:Int)
+GET         /US/mollusk/genome/getSeqs                         controllers.GenomeController.getSeqs(gb:String,range:String)
+GET         /US/mollusk/genome/mapPage                         controllers.LocationController.mapPage
+POST        /US/mollusk/genome/getWorldData                    controllers.LocationController.getWorldData
+POST        /US/mollusk/genome/getInfoByLocation               controllers.LocationController.getInfoByLocation(location:String)
+GET         /US/mollusk/genome/genomeInfoPageByGeneid          controllers.GenomeController.genomeInfoPageByGeneid(geneid:String)
+GET         /US/mollusk/genome/genomeInfoPageByOrganism        controllers.GenomeController.genomeInfoPageByOrganism(organism:String)
+GET         /US/mollusk/genome/geneInfoPageByGeneid            controllers.GenomeController.geneInfoPageByGeneid(geneid:String)
+POST        /US/mollusk/genome/getSataNums                     controllers.GenomeController.getSataNums(classes:String)
 
 
 
-GET         /US/mollusk/tree/tree                            controllers.TreeController.tree
-POST        /mollusk/tree/getTreeJson                        controllers.TreeController.getTreeJson
-POST        /mollusk/tree/getTreeData                        controllers.TreeController.getTreeData(id:Int)
+GET         /mollusk/insert/insertGemome                       controllers.InsertController.insertGemome
+GET         /mollusk/insert/insertGeneSum                      controllers.InsertController.insertGeneSum
+GET         /mollusk/insert/insertGene                         controllers.InsertController.insertGene
+GET         /mollusk/insert/addStatus                          controllers.InsertController.addStatus
+GET         /mollusk/insert/updateGeographical                 controllers.InsertController.updateGeographical
+GET         /mollusk/insert/updateCitation                     controllers.InsertController.updateCitation
+GET         /mollusk/insert/updateLocationRussia               controllers.InsertController.updateLocationRussia
+GET         /mollusk/insert/updateLink                         controllers.InsertController.updateLink
 
 
+GET         /US/mollusk/tools/tool                             controllers.ToolsController.tool
+GET         /US/mollusk/tools/blastBefore                      controllers.ToolsController.blastBefore
+GET         /US/mollusk/tools/seqFetchBefore                   controllers.ToolsController.seqFetchBefore
+GET         /US/mollusk/tools/genewiseefore                    controllers.ToolsController.geneWiseBeforeUS
+GET         /US/mollusk/tools/lastzBefore                      controllers.ToolsController.lastzBeforeUS
+GET         /US/mollusk/tools/muscleBefore                     controllers.ToolsController.muscleBeforeUS
+GET         /US/mollusk/tools/primerBefore                     controllers.ToolsController.primerBeforeUS
+GET         /US/mollusk/tools/syntenyBefore                    controllers.ToolsController.syntenyBeforeUS
 
-GET         /US/mollusk/literature/literaturePage            controllers.LiteratureController.literaturePage
-POST        /US/mollusk/literature/getAllLiterature          controllers.LiteratureController.getAllLiterature
 
-GET         /US/mollusk/search/searchBefore                  controllers.SearchController.searchBefore(input:String)
-POST        /mollusk/search/searchByDbInput                  controllers.SearchController.searchByDbInput(input:String)
+POST        /mollusk/tools/blastRun                            controllers.ToolsController.blastRun
+GET         /mollusk/tools/blastResultBefore                   controllers.ToolsController.blastResultBefore(path:String,types:String,db:String)
+POST        /mollusk/tools/blastResult                         controllers.ToolsController.blastResult(path:String,types:String)
+POST        /PODB/tools/seqRegion                              controllers.ToolsController.seqRegion
+POST        /mollusk/tools/genewise                            controllers.ToolsController.genewise
+POST        /PODB/tools/primer                                 controllers.ToolsController.primer
+POST        /mollusk/tools/muscle                              controllers.ToolsController.muscle
+POST        /mollusk/tools/downloadTree                        controllers.ToolsController.downloadTree
+POST        /mollusk/tools/lastz                               controllers.ToolsController.lastz
 
-GET         /downloadBlastByRange                            controllers.DownloadController.downloadBlastByRange(name:String,range:String,db:String)
-GET         /downloadBlastByName                             controllers.DownloadController.downloadBlastByName(name:String,db:String)
+GET         /US/mollusk/download/downloadBefore                controllers.DownloadController.downloadBeforeUS
+GET         /mollusk/download/download                         controllers.DownloadController.download(file:String)
+GET         /mollusk/download/getDownloadJson                  controllers.DownloadController.getDownloadJson
+GET         /mollusk/download/downloadSelect                   controllers.DownloadController.downloadSelect(id:String,fa:String)
+GET         /mollusk/download/downloadType                     controllers.DownloadController.downloadType(name:String,fa:String)
+
+GET         /mollusk/utils/getImageByPhotoId                   controllers.UtilsController.getImageByPhotoId(name:String)
+POST        /mollusk/utils/getLastzTarfetExample               controllers.UtilsController.getLastzTarfetExample
+GET         /mollusk/utils/downloadLastzTarfetExample          controllers.UtilsController.downloadLastzTarfetExample
+POST        /mollusk/utils/getLastzQueryExample                controllers.UtilsController.getLastzQueryExample
+GET         /mollusk/utils/downloadLastzQueryExample           controllers.UtilsController.downloadLastzQueryExample
+GET         /mollusk/utils/getGemomeImg                        controllers.UtilsController.getGemomeImg(geneid:String)
+GET         /mollusk/utils/getGenomeImgByName                  controllers.UtilsController.getGenomeImgByName(name:String)
+GET         /mollusk/utils/openPdf                             controllers.UtilsController.openPdf(pdf:String)
+
+GET         /US/mollusk/taxTree/tree                           controllers.TreeController.tree
+POST        /mollusk/tree/getTreeJson                          controllers.TreeController.getTreeJson
+POST        /mollusk/tree/getTreeData                          controllers.TreeController.getTreeData(id:Int)
+
+GET         /US/mollusk/phyTree/treeOfLife                     controllers.TreeController.treeOfLife
+GET         /mollusk/tree/plot                                 controllers.TreeController.plot
+GET         /treeTest                                          controllers.TreeController.treeTest
+
+GET         /test                                              controllers.HomeController.test
+GET         /getImg                                            controllers.GenomeController.getImg
+GET         /replaceGbToSpecies                                controllers.TreeController.replaceGbToSpecies
+
+GET         /US/mollusk/compare/comparePage                    controllers.CompareController.comparePage
+POST        /mollusk/compare/getLocationSpecies                controllers.CompareController.getLocationSpecies
+POST        /mollusk/compare/getResult                         controllers.CompareController.getResult
+
+
+GET         /US/mollusk/literature/literaturePage              controllers.LiteratureController.literaturePage
+GET         /US/mollusk/citation/citationPage                  controllers.LiteratureController.citationPage
+GET         /US/mollusk/citation/citationInfo                  controllers.LiteratureController.citationInfo(id:Int)
+POST        /US/mollusk/literature/getAllLiterature            controllers.LiteratureController.getAllLiterature
+
+GET         /US/mollusk/search/searchBefore                    controllers.SearchController.searchBefore(input:String)
+POST        /mollusk/search/searchByDbInput                    controllers.SearchController.searchByDbInput(input:String)
+
+GET         /downloadBlastByRange                              controllers.DownloadController.downloadBlastByRange(name:String,range:String,db:String)
+GET         /downloadBlastByName                               controllers.DownloadController.downloadBlastByName(name:String,db:String)
 
 
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                                    controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                                      controllers.Assets.versioned(path="/public", file: Asset)
 
       

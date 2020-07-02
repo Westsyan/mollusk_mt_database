@@ -1,9 +1,45 @@
 @()(implicit session: Session)
-@english.home.main("About"){
+@english.home.main("About") {
+
+    <style>
+        .intro{
+            padding-left: 20px;
+            padding-right: 20px;
+            text-indent: 2em;
+        }
+
+        .intro div{
+            width: 130px;
+            float: left;
+        }
+    </style>
 
     <div id="content">
         <h1 class="title">About Us</h1>
         <div class="line"></div>
+        <div class="intro">
+            MODB, an open source knowledge base of Mollusca, founded by the Life and Health Data Center, Yantai University,
+            aims at collecting and processing information of mollusks, sharing them to anyone. To improve our database,
+            species were filtered according their mitochondrial genomes. There is no species without mitochondrial genome
+            information in our knowledge base. Of course, we will update datasets once or twice per month after the database
+            available, and you’ll be appreciated for collecting information and providing to us.
+        </div>
+
+        <div class="intro">You can contact us at:</div>
+        <div class="intro" style="text-indent: 4em;"><div>Leadership: </div>Xumin Wang</div>
+        <div class="intro" style="text-indent: 4em;"><div>Linkman:</div>  Jiangyong Qu </div>
+        <div class="intro" style="text-indent: 4em;"><div>E-mail:</div>    <a href="mailto:qjy@@ytu.edu.cn" target="_blank">qjy@@ytu.edu.cn</a></div>
+        <div class="intro" style="text-indent: 4em;"><div>Address:</div>   Yantai University, 30 Qingquan Road, Laishan District, Yantai, Shandong, China </div>
+        <h2>OUR TEAM</h2>
+        <h3 style="text-indent: 2em;">Teachers</h3>
+        <div class="intro">Xumin Wang, Jiangyong Qu, Chuanlin Liu, Jun He, Xiumei Liu, Lijun Wang, Sen Wu</div>
+        <h3 style="text-indent: 2em;">Students</h3>
+        <div class="intro">Yutong Cui, Shanshan Wang, Xiaoyu Guo, Yanran Xu, Ruoran Li, Xiaoyue Sun, Xiang Li,
+            Xiyue Wang, Xiaozhen Zhou, Yihe Zhang, Guixiu Li, Yiyang Song</div>
+
+        <img src="/assets/images/team.png" />
+
+
 
     </div>
 }

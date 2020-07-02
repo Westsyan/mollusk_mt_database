@@ -3,6 +3,7 @@ package controllers
 import java.io.File
 import java.nio.file.Files
 
+import config.MyConfig
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, ControllerComponents, Headers}
@@ -11,7 +12,7 @@ import utils.Utils
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class UtilsController @Inject()(cc: ControllerComponents)(implicit exec: ExecutionContext) extends AbstractController(cc) {
+class UtilsController @Inject()(cc: ControllerComponents)(implicit exec: ExecutionContext) extends AbstractController(cc) with MyConfig {
 
   def getImageByPhotoId(name: String) = Action { implicit request =>
     val path = s"${Utils.path}/images/$name"
@@ -19,13 +20,16 @@ class UtilsController @Inject()(cc: ControllerComponents)(implicit exec: Executi
     SendImg(file,request.headers)
   }
 
-  def getGemomeImg(id:Int) = Action { implicit request =>
-    val path = s"${Utils.path}/images/${id}-1.jpg"
-    var file = new File(path)
-    if (!file.exists()) {
-      file = new File(s"${Utils.path}/images/no_photo.jpg")
-    }
+  def getGemomeImg(geneid:String) = Action { implicit request =>
+    val list = s"${Utils.path}/images".toFile.listFiles()
+    val path = list.find(_.getName.split("-").head == geneid.toString)
+    val  file= path.getOrElse(new File(s"${Utils.path}/images/no_photo.jpg"))
     SendImg(file,request.headers)
+  }
+
+  def getGenomeImgByName(name:String) = Action{implicit request=>
+    val path = s"${Utils.path}/images/$name"
+    SendImg(path.toFile,request.headers)
   }
 
 
@@ -71,6 +75,20 @@ class UtilsController @Inject()(cc: ControllerComponents)(implicit exec: Executi
   }
 
 
+  def openPdf(pdf: String) = Action { implicit request =>
+    if (pdf.toFile.exists()) {
+      val name = pdf.split("/").last
+      val filename = new String(("filename=\"" + name + "\"").getBytes("GBK"), "ISO-8859-1")
+      Ok.sendFile(new File(pdf)).withHeaders(
+        //缓存
+        CACHE_CONTROL -> "max-age=3600",
+        CONTENT_DISPOSITION -> filename,
+        CONTENT_TYPE -> "text/plain"
+      )
+    }else{
+      Ok(Json.toJson("none"))
+    }
+  }
 
 
 

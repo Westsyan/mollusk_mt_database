@@ -37,7 +37,7 @@
     </style>
 
     <div id="content" class="container">
-        <h1 class="title"><a href="@routes.GenomeController.browserPage()">Genome</a> -
+        <h1 class="title"><a href="@routes.GenomeController.browserPage("")">Genome</a> -
             <a href="@routes.GenomeController.genomeInfoPage(row.gbid)">@genbank</a> - @row.geneid</h1>
         <div class="line"></div>
 
@@ -70,8 +70,8 @@
 
                         <tr>
                             <th>Length</th>
-                            <td>
-                            @(row.end - row.start + 1)
+                            <td id="length">
+
                             </td>
                         </tr>
                         <tr id="strand">
@@ -175,8 +175,13 @@
 
             $(function () {
 
+                let length = "@(row.end - row.start + 1)"
+                $("#length").text(length.replace(/\d{1,3}(?=(\d{3})+$)/g,function(s){
+                    return s+','
+                }))
+
                 let host = "http://210.22.121.250:20795"
-                $("#iframe").attr("src", host + "/?data=my_data/MODB/@genbank/data&loc=@genbank:@row.start..@row.end&tracks=DNA,Annotation&tracklist=0&nav=1&overview=0");
+                $("#iframe").attr("src", host + "/?data=my_data/MODB/data&loc=@genbank:@row.start..@row.end&tracks=DNA,Annotation&tracklist=0&nav=1&overview=0");
 
                 $.ajax({
                     url: "/US/mollusk/genome/getSeqs?gb=@{genbank}&range=@row.geneid",

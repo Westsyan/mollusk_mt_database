@@ -2,32 +2,40 @@ package test
 
 import java.io.File
 
+import config.MyConfig
 import org.apache.commons.io.FileUtils
 import utils.{ExecCommand, Utils}
 
 import scala.collection.JavaConverters._
 
-object getCpData {
+object getCpData extends MyConfig{
 
 
   def main(args: Array[String]): Unit = {
-    new File("D:\\软体动物线粒体数据库\\demogff").listFiles().foreach{x=>
-      val name = x.getName.split('.').head
+    getJbCmd
+  }
+
+  def t = {
+    new File("D:\\软体动物线粒体数据库\\gff").listFiles().foreach{x=>
+      val name = x.getName.dropRight(7)
       val line = FileUtils.readLines(x).asScala
       var mRNA = ""
-      val row = line.filter(_.contains("GenBank")).map(_.split("\t")).filter(y=>y(2) == "gene" || y(2) == "CDS" || y(2) == "exon").map{y=>
+      val row = line.filter(_.contains("GenBank")).map(_.split("\t")).filter{y=>
+        y(2) == "gene"  || (y(2) == "CDS"&& y.last.contains("Parent")) || (y(2) == "exon" && y.last.contains("Parent"))
+
+      }.map{y=>
         val last = if(y(2) == "gene"){
           y.last.split(";").find(_.startsWith("ID")).get.split('.').head + ";"
         }else{
           y.last.split(";").find(_.startsWith("Parent")).get.split('.').head + ";"
         }
-        (y(2),last.split('=').last.init,y.init.mkString("\t") + "\t" + last)
+        (y(2),last.split('=').last.init, name + "\t" + y.tail.init.mkString("\t") + "\t" + last)
       }
       val gene = row.filter(_._1 == "gene").map(_._2)
       val lasts = row.filter(y=> gene.contains(y._2)).map(_._3)
       println(lasts)
 
-      FileUtils.writeLines(new File(s"D:\\软体动物线粒体数据库\\demojb/$name.gff"),lasts.asJava)
+      FileUtils.writeLines(new File(s"D:\\软体动物线粒体数据库\\jb/$name.gff"),lasts.asJava)
     }
   }
 
@@ -82,7 +90,7 @@ object getCpData {
     }
   }
 
-  def getCpPepAndCds(path: String) = {
+  def getPepAndCds(path: String) = {
     new File(path).listFiles().foreach { x =>
       val command = "perl D:/软体动物线粒体数据库/genbank_parser_v4.0.pl --type all " + x.getAbsolutePath + ""
       val exec = new ExecCommand()
@@ -91,29 +99,29 @@ object getCpData {
   }
 
   def getJbGff = {
-    new File("D:\\软体动物线粒体数据库\\demogff").listFiles().foreach { x =>
+    new File("D:\\软体动物线粒体数据库\\gff").listFiles().foreach { x =>
       val line = FileUtils.readFileToString(x)
       val name = x.getName.split('.').head
       val lines = line.split("##FASTA").head.split("\n").filter(!_.startsWith("#"))
       val l = lines.map(_.split("\t")).filter(y => y(2) == "mRNA" || y(2) == "CDS" || y(2) == "exon").map(_.mkString("\t"))
-      FileUtils.writeLines(new File(s"D:\\软体动物线粒体数据库\\demojb/$name.gff"), l.toBuffer.asJava)
+      FileUtils.writeLines(new File(s"D:\\软体动物线粒体数据库\\jb/$name.gff"), l.toBuffer.asJava)
     }
   }
 
   def getJbDir = {
-    val files = new File("D:\\软体动物线粒体数据库\\demojb").listFiles()
+    val files = new File("D:\\软体动物线粒体数据库\\jb").listFiles()
     val f = files.map(_.getName.split('.').head).distinct
     f.foreach { x =>
       new File(s"D:\\软体动物线粒体数据库\\demojb/$x").mkdir()
       val fs = files.filter(_.getName.startsWith(x))
       fs.foreach { y =>
-        FileUtils.moveFile(y, new File(s"D:\\软体动物线粒体数据库\\demojb/$x/${y.getName}"))
+        FileUtils.moveFile(y, new File(s"D:\\软体动物线粒体数据库\\jb/$x/${y.getName}"))
       }
     }
   }
 
   def reName = {
-    val files = new File("D:\\软体动物线粒体数据库\\demojb").listFiles()
+    val files = new File("D:\\软体动物线粒体数据库\\jb").listFiles()
     files.foreach { x =>
       val fs = x.listFiles()
       fs.foreach { y =>
@@ -126,40 +134,62 @@ object getCpData {
     }
   }
 
+  def getJbFile = {
+    val file = "D:\\软体动物线粒体数据库\\jb".toFile.listFiles()
+    val fasta = file.filter(_.getName.endsWith("fasta"))
+    val gff = file.filter(_.getName.endsWith("gff"))
 
-  def reGetJbDir = {
-    val path = "D:\\藻类细胞器\\cpjb/"
-    new File(path).listFiles().foreach { x =>
+    println(fasta.length)
 
-      try {
+    fasta.foreach{x=>
+      val name = x.getName
+      println(name)
+      val name2 = x.getName.split('.').init.mkString(".")
+      FileUtils.moveFile(s"D:/软体动物线粒体数据库/jb/$name/$name".toFile,s"D:\\软体动物线粒体数据库\\jb/$name2/$name".toFile)
 
-        val name = x.getName.split('.').head
-
-        FileUtils.moveDirectory(x, new File(path + name))
-      } catch {
-        case e =>
-          println(x.getName)
-      }
-
+      FileUtils.deleteDirectory(x)
     }
+
+    gff.foreach{x=>
+      val name = x.getName
+      val name2 = x.getName.split('.').init.mkString(".")
+      FileUtils.moveFile(s"D:/软体动物线粒体数据库/jb/$name/$name".toFile,s"D:\\软体动物线粒体数据库\\jb/$name2/$name".toFile)
+    FileUtils.deleteDirectory(x)
+    }
+
   }
 
   def getJbCmd = {
 
-    new File("D:\\软体动物线粒体数据库/getDemoJB.sh").delete()
+    new File("D:\\软体动物线粒体数据库/getJB.sh").delete()
 
-    new File("D:\\软体动物线粒体数据库\\demojb").listFiles().foreach { x =>
+    new File("D:\\软体动物线粒体数据库\\jb").listFiles().foreach { x =>
 
       val n = x.getName
-      val sh = s"cd /var/www/jb/my_data/MODB/$n;\n" +
-        s"../../../bin/prepare-refseqs.pl -fasta ./*.fasta;\n" +
-        s"../../../bin/prepare-refseqs.pl --conf data/trackList.json;\n" +
-        s"../../../bin/flatfile-to-json.pl --gff ./*.gff --trackType FeatureTrack --trackLabel Annotation;\n" +
-        s"../../../bin/biodb-to-json.pl --conf data/trackList.json ;\n"
+      val sh = s"cd /usr/share/nginx/jb/MODB/$n;\n" +
+        s"../../bin/prepare-refseqs.pl -fasta ./*.fasta;\n" +
+        s"../../bin/prepare-refseqs.pl --conf data/trackList.json;\n" +
+        s"../../bin/flatfile-to-json.pl --gff ./*.gff --trackType FeatureTrack --trackLabel Annotation;\n" +
+        s"../../bin/biodb-to-json.pl --conf data/trackList.json ;\n"
 
-      FileUtils.writeStringToFile(new File("D:\\软体动物线粒体数据库/getDemoJB.sh"), sh, true)
+      FileUtils.writeStringToFile(new File("D:\\软体动物线粒体数据库/getJB.sh"), sh, true)
     }
   }
 
+  def getAllGffAndFasta = {
+    val fs = new File("D:\\软体动物线粒体数据库\\jb").listFiles()
+    val gff = fs.filter(_.getName.endsWith("gff"))
+    val fasta = fs.filter(_.getName.endsWith("fasta"))
+
+    gff.foreach{x=>
+      val gffLine = x.readLines
+      FileUtils.writeLines(new File("D:\\软体动物线粒体数据库/all.gff"),gffLine.asJava,true)
+    }
+
+    fasta.foreach{x=>
+      val fastaLine = x.readLines
+      FileUtils.writeLines(new File("D:\\软体动物线粒体数据库/all.fasta"),fastaLine.asJava,true)
+    }
+  }
 
 }
